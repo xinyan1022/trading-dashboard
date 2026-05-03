@@ -509,13 +509,23 @@ body {
     <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px">尚未填寫執行計劃</div>
   </div>
 
-  <div class="card">
+  <div class="grid2">
+    <div class="card">
       <div class="card-title">進場前確認</div>
       <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
       <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
       <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
       <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊</div></div></div>
     </div>
+
+    <div class="card">
+    <div class="card-title">絕對禁止</div>
+    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">停損後不反向——停損只代表碰到停損點，不代表 Order Flow 反轉</div></div>
+    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">盤整不進場——等待 Area of Opportunity，等待就是我的倉位</div></div>
+    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">不在盤中改變今天的 Bias——Bias 在盤前決定</div></div>
+    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">今日最多 4 筆——Less is More，螢幕時間越少越好</div></div>
+  </div>
+  </div>
 
   <!-- 盤中狀態 -->
   <div class="card">
@@ -534,14 +544,6 @@ body {
       <div style="font-size:11px;color:var(--text3);margin-bottom:4px">盤中觀察</div>
       <textarea id="intraday-note" class="note-input" rows="2" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
     </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">絕對禁止</div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">停損後不反向——停損只代表碰到停損點，不代表 Order Flow 反轉</div></div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">盤整不進場——等待 Area of Opportunity，等待就是我的倉位</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">不在盤中改變今天的 Bias——Bias 在盤前決定</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">今日最多 4 筆——Less is More，螢幕時間越少越好</div></div>
   </div>
 
   <div class="card">
@@ -596,18 +598,8 @@ body {
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">停損冷卻計時器</div>
-    <div class="timer-active" id="timer-active">
-      <div class="timer-val" id="timer-val">30:00</div>
-      <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
-    </div>
-    <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 30 分鐘冷卻</button>
-    <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px" id="btn-cancel">取消計時</button>
-    <div class="timer-hint">停損後自動啟動，關閉所有圖表，去休息。時間到前不回來看盤。</div>
-  </div>
-
-  <div class="card">
+  <div class="grid2">
+    <div class="card">
     <div class="card-title">交易統計圖表</div>
     <div class="chart-box">
       <div class="pie-wrap">
@@ -628,7 +620,20 @@ body {
     </div>
   </div>
 
-  <div class="card">
+    <div class="card">
+    <div class="card-title">停損冷卻計時器</div>
+    <div class="timer-active" id="timer-active">
+      <div class="timer-val" id="timer-val">30:00</div>
+      <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
+    </div>
+    <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 30 分鐘冷卻</button>
+    <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px" id="btn-cancel">取消計時</button>
+    <div class="timer-hint">停損後自動啟動，關閉所有圖表，去休息。時間到前不回來看盤。</div>
+  </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
     <div class="card-title">今日操作</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-blue" onclick="downloadDailyRecord()">下載 Markdown 紀錄</button>
@@ -637,7 +642,7 @@ body {
     <div style="font-size:12px;color:var(--text3);margin-top:8px">每日收盤後匯出，清除只會重置看板資料，不影響盤前分析</div>
   </div>
 
-  <div class="card">
+    <div class="card">
     <div class="card-title">資料備份與還原</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
       <button class="btn btn-amber" onclick="exportBackup()">📦 匯出 JSON 備份</button>
@@ -649,14 +654,7 @@ body {
       建議每週備份一次，存在固定資料夾，資料不見時可完整還原
     </div>
   </div>
-
-  <div class="card">
-      <div class="card-title">盤前清單</div>
-      <div class="rule-row" data-id="p1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">盤前分析已完成</div><div class="rsub">HTF → LTF 方向確認</div></div></div>
-      <div class="rule-row" data-id="p2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">5M、1M圖表關閉</div><div class="rsub">觀察周期最低為15M</div></div></div>
-      <div class="rule-row" data-id="p3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">狀態確認平靜</div><div class="rsub">Clarity > Profit</div></div></div>
-      <div class="rule-row" data-id="p4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">遊戲已開啟備用</div><div class="rsub">停損後立刻切換</div></div></div>
-    </div>
+  </div>
 
   <div class="footer">Process > Outcome · Less is More</div>
 </div>
@@ -711,6 +709,15 @@ body {
   </div>
 
 
+
+
+  <div class="card">
+      <div class="card-title">盤前清單</div>
+      <div class="rule-row" data-id="p1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">盤前分析已完成</div><div class="rsub">HTF → LTF 方向確認</div></div></div>
+      <div class="rule-row" data-id="p2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">5M、1M圖表關閉</div><div class="rsub">觀察周期最低為15M</div></div></div>
+      <div class="rule-row" data-id="p3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">狀態確認平靜</div><div class="rsub">Clarity > Profit</div></div></div>
+      <div class="rule-row" data-id="p4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">遊戲已開啟備用</div><div class="rsub">停損後立刻切換</div></div></div>
+    </div>
 
   <div class="footer">盤前完成 → 前往看板交易</div>
 </div>

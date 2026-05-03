@@ -481,6 +481,15 @@ body {
     </div>
   </div>
 
+  <!-- 心理狀態提示 -->
+  <div class="card" id="psych-status-card" style="border-color:var(--amber-border);background:var(--amber-bg)">
+    <div class="card-title" style="color:var(--amber)">🧠 今日心理狀態</div>
+    <div id="psych-status-text" style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:8px">
+      尚未完成心理狀態檢核。開盤前請前往「提醒」頁面完成 Jared Tendler 檢核。
+    </div>
+    <button class="btn btn-blue" onclick="showPage('reminder', document.getElementById('nav-reminder'))" style="font-size:12px;padding:6px 12px">前往心理檢核 →</button>
+  </div>
+
   <!-- 盤前摘要 -->
   <div class="card">
     <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
@@ -511,11 +520,11 @@ body {
 
   <div class="grid2">
     <div class="card">
-      <div class="card-title">進場前確認</div>
+      <div class="card-title">進場前確認 <span style="font-size:11px;color:var(--text3);font-weight:400">（依序勾選，缺一不可）</span></div>
+      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊 — 風控優先</div></div></div>
       <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
       <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
       <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
-      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊</div></div></div>
     </div>
 
     <div class="card">
@@ -586,7 +595,7 @@ body {
         onkeydown="if(event.key==='Enter')recordTrade()">
       <button class="btn btn-blue" onclick="recordTrade()" style="white-space:nowrap">確認出場</button>
     </div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">正數自動記為獲利，負數自動記為停損並啟動冷卻計時器</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入後會彈出確認視窗，確認後才會記錄。停損將自動啟動 30 分鐘冷卻計時器。</div>
 
     <!-- 明細 -->
     <div id="pts-log" style="font-size:13px;color:var(--text2);max-height:130px;overflow-y:auto;line-height:2.2"></div>
@@ -711,8 +720,13 @@ body {
 
 
 
-  <div class="card">
+  <div style="background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:10px;padding:10px 14px;margin-bottom:12px">
+      <div style="font-size:12px;color:var(--indigo);font-weight:700;letter-spacing:0.5px">🔒 最終確認區</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.6">以下為開盤前最終確認，請確保上方所有分析已完成、心理狀態已檢核，才能勾選。</div>
+    </div>
+    <div class="card">
       <div class="card-title">盤前清單</div>
+      <div class="rule-row" data-id="p0" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">心理狀態檢核已完成</div><div class="rsub">前往「提醒」頁面完成 Jared Tendler 檢核</div></div></div>
       <div class="rule-row" data-id="p1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">盤前分析已完成</div><div class="rsub">HTF → LTF 方向確認</div></div></div>
       <div class="rule-row" data-id="p2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">5M、1M圖表關閉</div><div class="rsub">觀察周期最低為15M</div></div></div>
       <div class="rule-row" data-id="p3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">狀態確認平靜</div><div class="rsub">Clarity > Profit</div></div></div>
@@ -883,7 +897,7 @@ function calcLevel() {
   const levelEl = document.getElementById('mg-result-level');
   const actionEl = document.getElementById('mg-result-action');
 
-  if (total === 0) { result.style.display = 'none'; return; }
+  if (total === 0) { result.style.display = 'none'; updatePsychStatus(); return; }
 
   result.style.display = 'block';
 
@@ -906,11 +920,45 @@ function calcLevel() {
     levelEl.textContent = '✅ A 級狀態';
     actionEl.innerHTML = '<strong style="color:var(--text)">信任自己，執行計劃</strong><br>這是你最佳的交易狀態';
   }
+  updatePsychStatus();
 }
 
 function resetMG() {
   document.querySelectorAll('input[data-level]').forEach(el => el.checked = false);
   document.getElementById('mg-result').style.display = 'none';
+}
+
+// 更新看板頁面的心理狀態顯示
+function updatePsychStatus() {
+  const card = document.getElementById('psych-status-card');
+  const text = document.getElementById('psych-status-text');
+  if (!card || !text) return;
+
+  const cChecked = document.querySelectorAll('input[data-level="c"]:checked').length;
+  const bChecked = document.querySelectorAll('input[data-level="b"]:checked').length;
+  const aChecked = document.querySelectorAll('input[data-level="a"]:checked').length;
+  const total = cChecked + bChecked + aChecked;
+
+  if (total === 0) {
+    card.style.borderColor = 'var(--amber-border)';
+    card.style.background = 'var(--amber-bg)';
+    text.innerHTML = '⚠️ <strong>尚未完成心理狀態檢核</strong><br>開盤前請前往「提醒」頁面完成 Jared Tendler 檢核。';
+    return;
+  }
+
+  if (cChecked >= 1) {
+    card.style.borderColor = 'var(--red-border)';
+    card.style.background = 'var(--red-bg)';
+    text.innerHTML = '🔴 <strong>C 級狀態 — 不建議交易</strong><br>檢測到負面心理指標，建議暫停今日交易。';
+  } else if (bChecked >= 2) {
+    card.style.borderColor = 'var(--amber-border)';
+    card.style.background = 'var(--amber-bg)';
+    text.innerHTML = '⚡ <strong>B 級狀態 — 縮小部位</strong><br>心理狀態尚可，但請嚴守計劃、只執行最高把握設置。';
+  } else {
+    card.style.borderColor = 'var(--green-border)';
+    card.style.background = 'var(--green-bg)';
+    text.innerHTML = '✅ <strong>A 級狀態 — 最佳交易狀態</strong><br>心理檢核通過，信任自己，執行計劃。';
+  }
 }
 
 // 主題切換
@@ -931,11 +979,27 @@ themeBtn.addEventListener('click', toggleTheme);
 
 // 頁面切換
 function showPage(id, el) {
+  // 如果從盤前分析頁面離開，自動儲存並提示
+  const currentActive = document.querySelector('.page.active');
+  if (currentActive && currentActive.id === 'premarket' && id !== 'premarket') {
+    savePlan();
+    // 檢查是否有未填寫的關鍵欄位
+    const plan = document.getElementById('plan-note')?.value?.trim();
+    if (!plan) {
+      if (!confirm('⚠️ 執行計劃尚未填寫，確定要離開盤前分析嗎？')) {
+        return;
+      }
+    }
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
   saveData();
+
+  // 更新心理狀態顯示
+  if (id === 'cockpit') updatePsychStatus();
 }
 
 // 時鐘
@@ -998,8 +1062,14 @@ function recordTrade() {
   const input = document.getElementById('pts-input');
   const val = parseFloat(input.value);
   if (isNaN(val) || val === 0) return;
-  input.value = '';
 
+  const type = val > 0 ? '獲利' : '停損';
+  const sign = val > 0 ? '+' : '';
+  const confirmMsg = `確認記錄這筆出場？\n\n類型：${type}\n點數：${sign}${val} 點\n金額：${sign}${val * 10} 元\n\n${val < 0 ? '⚠️ 停損將自動啟動 30 分鐘冷卻計時器' : ''}`;
+
+  if (!confirm(confirmMsg)) return;
+
+  input.value = '';
   ptsLog.push(val);
 
   if (val > 0) {
@@ -1428,6 +1498,7 @@ window.onload = () => {
     themeBtn.textContent = '切換淺色';
   }
   loadData();
+  updatePsychStatus();
 };
 </script>
 </body>

@@ -333,9 +333,8 @@ body {
 /* 自動增長 textarea */
 .auto-expand {
   min-height: 44px;
-  max-height: 300px;
-  overflow-y: hidden;
-  resize: vertical;
+  overflow: hidden;
+  resize: none;
   field-sizing: content;
 }
 
@@ -707,7 +706,7 @@ body {
   </div>
 
   <div class="card">
-    <div class="card-title">Context Area</div>
+    <div class="card-title">Context Area — 4H</div>
     <div class="flow-row"><span class="flow-label">4H Order Flow Lag</span><div class="flow-btns" id="h4fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h4fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h4fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h4fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
@@ -1497,13 +1496,13 @@ window.onload = () => {
 
   // 初始化自動增長 textarea
   document.querySelectorAll('.auto-expand').forEach(textarea => {
-    textarea.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = this.scrollHeight + 'px';
-    });
-    // 初始調整
-    textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight + 'px';
+    function resize(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+    textarea.addEventListener('input', function() { resize(this); });
+    textarea.addEventListener('keydown', function() { setTimeout(() => resize(this), 0); });
+    resize(textarea);
   });
 };
 </script>

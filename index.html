@@ -509,6 +509,14 @@ body {
     <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px">尚未填寫執行計劃</div>
   </div>
 
+  <div class="card">
+      <div class="card-title">進場前確認</div>
+      <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
+      <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
+      <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
+      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊</div></div></div>
+    </div>
+
   <!-- 盤中狀態 -->
   <div class="card">
     <div class="card-title">盤中狀態</div>
@@ -525,24 +533,6 @@ body {
     <div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:4px">盤中觀察</div>
       <textarea id="intraday-note" class="note-input" rows="2" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">盤前清單</div>
-      <div class="rule-row" data-id="p1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">盤前分析已完成</div><div class="rsub">HTF → LTF 方向確認</div></div></div>
-      <div class="rule-row" data-id="p2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">5M、1M圖表關閉</div><div class="rsub">觀察周期最低為15M</div></div></div>
-      <div class="rule-row" data-id="p3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">狀態確認平靜</div><div class="rsub">Clarity > Profit</div></div></div>
-      <div class="rule-row" data-id="p4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">遊戲已開啟備用</div><div class="rsub">停損後立刻切換</div></div></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">進場前確認</div>
-      <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
-      <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
-      <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
-      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊</div></div></div>
     </div>
   </div>
 
@@ -660,6 +650,14 @@ body {
     </div>
   </div>
 
+  <div class="card">
+      <div class="card-title">盤前清單</div>
+      <div class="rule-row" data-id="p1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">盤前分析已完成</div><div class="rsub">HTF → LTF 方向確認</div></div></div>
+      <div class="rule-row" data-id="p2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">5M、1M圖表關閉</div><div class="rsub">觀察周期最低為15M</div></div></div>
+      <div class="rule-row" data-id="p3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">狀態確認平靜</div><div class="rsub">Clarity > Profit</div></div></div>
+      <div class="rule-row" data-id="p4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">遊戲已開啟備用</div><div class="rsub">停損後立刻切換</div></div></div>
+    </div>
+
   <div class="footer">Process > Outcome · Less is More</div>
 </div>
 
@@ -720,67 +718,6 @@ body {
 <!-- 提醒頁 -->
 <div id="reminder" class="page">
   <div class="header"><div class="title">每日提醒</div></div>
-
-  <!-- 個人宣言 -->
-  <div class="card" style="border-left:3px solid var(--blue);background:var(--blue-bg)">
-    <div style="font-size:13px;line-height:1.9;color:var(--text)">
-      我絕對不要再成為那個 <strong>4月29日的自己</strong>——<br>
-      看對方向，卻在盤整裡反覆進場，停損後開始做反向。<br><br>
-      <strong>5月1日的我才是真實的能力。</strong><br>
-      方向清晰。等待耐心。全程沒有干預。
-    </div>
-  </div>
-
-  <!-- 核心一：症狀與根源 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 症狀不是問題本身</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      停損後反向操作，是<strong style="color:var(--text)">症狀</strong>。<br>
-      核心問題是：<strong style="color:var(--text)">你不清楚自己在等什麼。</strong><br>
-      當你能明確定義每個條件，猜測就消失了。
-    </div>
-  </div>
-
-  <!-- 核心二：市場說服你，不是你說服市場 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 讓市場說服你</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      打開圖表，第一個問題是：<br>
-      <strong style="color:var(--text)">「這張圖我不喜歡什麼？」</strong><br>
-      如果做 X，我找多。如果沒有，<strong style="color:var(--text)">我等待。</strong>
-    </div>
-  </div>
-
-  <!-- 核心三：計劃表現 vs 你的表現 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 兩個指標</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      永遠追蹤兩件事：<br>
-      <strong style="color:var(--green)">① 交易計劃的表現</strong><br>
-      <strong style="color:var(--blue)">② 你自己的表現</strong><br>
-      縮小兩者之間的落差，就是你唯一要做的事。
-    </div>
-  </div>
-
-  <!-- 核心四：答案在日誌裡 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 答案在日誌裡</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      所有問題的答案都在你的交易日誌裡。<br>
-      虧損後不要去社群媒體找答案——<br>
-      <strong style="color:var(--text)">打開日誌，數據才是真相。</strong>
-    </div>
-  </div>
-
-  <!-- 核心五：機率 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 接受機率</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      你不需要解釋每一個細微走勢。<br>
-      市場是機率，不是確定性。<br>
-      <strong style="color:var(--text)">接受虧損是過程的一部分，才有平靜。</strong>
-    </div>
-  </div>
 
   <!-- 心理狀態檢核 -->
   <div class="card">
@@ -855,7 +792,68 @@ body {
     <button onclick="resetMG()" style="margin-top:10px;width:100%;padding:8px;background:var(--bg3);border:none;border-radius:8px;color:var(--text2);font-size:12px;cursor:pointer">清除勾選</button>
   </div>
 
-    <!-- 靜心語 -->
+  <!-- 個人宣言 -->
+  <div class="card" style="border-left:3px solid var(--blue);background:var(--blue-bg)">
+    <div style="font-size:13px;line-height:1.9;color:var(--text)">
+      我絕對不要再成為那個 <strong>4月29日的自己</strong>——<br>
+      看對方向，卻在盤整裡反覆進場，停損後開始做反向。<br><br>
+      <strong>5月1日的我才是真實的能力。</strong><br>
+      方向清晰。等待耐心。全程沒有干預。
+    </div>
+  </div>
+
+  <!-- 核心一：症狀與根源 -->
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 症狀不是問題本身</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+      停損後反向操作，是<strong style="color:var(--text)">症狀</strong>。<br>
+      核心問題是：<strong style="color:var(--text)">你不清楚自己在等什麼。</strong><br>
+      當你能明確定義每個條件，猜測就消失了。
+    </div>
+  </div>
+
+  <!-- 核心二：市場說服你，不是你說服市場 -->
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 讓市場說服你</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+      打開圖表，第一個問題是：<br>
+      <strong style="color:var(--text)">「這張圖我不喜歡什麼？」</strong><br>
+      如果做 X，我找多。如果沒有，<strong style="color:var(--text)">我等待。</strong>
+    </div>
+  </div>
+
+  <!-- 核心三：計劃表現 vs 你的表現 -->
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 兩個指標</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+      永遠追蹤兩件事：<br>
+      <strong style="color:var(--green)">① 交易計劃的表現</strong><br>
+      <strong style="color:var(--blue)">② 你自己的表現</strong><br>
+      縮小兩者之間的落差，就是你唯一要做的事。
+    </div>
+  </div>
+
+  <!-- 核心四：答案在日誌裡 -->
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 答案在日誌裡</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+      所有問題的答案都在你的交易日誌裡。<br>
+      虧損後不要去社群媒體找答案——<br>
+      <strong style="color:var(--text)">打開日誌，數據才是真相。</strong>
+    </div>
+  </div>
+
+  <!-- 核心五：機率 -->
+  <div class="card">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 接受機率</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
+      你不需要解釋每一個細微走勢。<br>
+      市場是機率，不是確定性。<br>
+      <strong style="color:var(--text)">接受虧損是過程的一部分，才有平靜。</strong>
+    </div>
+  </div>
+
+  <!-- 靜心語 -->
   <div class="card" style="border-left:3px solid var(--amber);background:var(--amber-bg)">
     <div style="font-size:13px;line-height:1.9;color:var(--text2);font-style:italic">
       「你無法在沸騰的水中看清自己的倒影。<br>

@@ -330,6 +330,15 @@ body {
 .note-input:focus { outline: none; border-color: var(--blue); }
 .note-input::placeholder { color: var(--text3); }
 
+/* 自動增長 textarea */
+.auto-expand {
+  min-height: 44px;
+  max-height: 300px;
+  overflow-y: hidden;
+  resize: vertical;
+  field-sizing: content;
+}
+
 .chart-box {
   width: 100%;
   height: 180px;
@@ -442,6 +451,7 @@ body {
 .save-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .footer { text-align: center; font-size: 12px; color: var(--text3); padding: 12px 0 16px; }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -515,16 +525,16 @@ body {
       </div>
     </div>
     <div style="font-size:10px;color:var(--indigo);font-weight:700;letter-spacing:0.5px;margin-bottom:5px">📋 執行計劃</div>
-    <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px">尚未填寫執行計劃</div>
+    <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word">尚未填寫執行計劃</div>
   </div>
 
   <div class="grid2">
     <div class="card">
       <div class="card-title">進場前確認 <span style="font-size:11px;color:var(--text3);font-weight:400">（依序勾選，缺一不可）</span></div>
-      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊 — 風控優先</div></div></div>
-      <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
-      <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
-      <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
+      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">① 停損＋停利掛單設好</div><div class="rsub">不手動點擊 — 風控優先</div></div></div>
+      <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">② HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
+      <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">③ 2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
+      <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">④ PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
     </div>
 
     <div class="card">
@@ -542,16 +552,16 @@ body {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
       <div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:4px">目前等待</div>
-        <textarea id="waiting-note" class="note-input" rows="2" placeholder="等待什麼訊號..."></textarea>
+        <textarea id="waiting-note" class="note-input auto-expand" placeholder="等待什麼訊號..."></textarea>
       </div>
       <div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:4px">關鍵價位</div>
-        <textarea id="level-note" class="note-input" rows="2" placeholder="關鍵支撐 / 壓力..."></textarea>
+        <textarea id="level-note" class="note-input auto-expand" placeholder="關鍵支撐 / 壓力..."></textarea>
       </div>
     </div>
     <div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:4px">盤中觀察</div>
-      <textarea id="intraday-note" class="note-input" rows="2" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
+      <textarea id="intraday-note" class="note-input auto-expand" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
     </div>
   </div>
 
@@ -685,7 +695,7 @@ body {
     <div class="flow-row"><span class="flow-label">Weekly Order Flow Lag</span><div class="flow-btns" id="wfl"><button class="flow-btn" data-val="bull" onclick="setFlow('wfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('wfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('wfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save" id="w-note" rows="2" placeholder="Weekly 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="w-note" placeholder="Weekly 備註"></textarea>
   </div>
 
   <div class="card">
@@ -693,7 +703,7 @@ body {
     <div class="flow-row"><span class="flow-label">Daily Order Flow Lag</span><div class="flow-btns" id="dfl"><button class="flow-btn" data-val="bull" onclick="setFlow('dfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('dfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('dfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save" id="d-note" rows="2" placeholder="Daily 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="d-note" placeholder="Daily 備註"></textarea>
   </div>
 
   <div class="card">
@@ -701,7 +711,7 @@ body {
     <div class="flow-row"><span class="flow-label">4H Order Flow Lag</span><div class="flow-btns" id="h4fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h4fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h4fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h4fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save" id="h4-note" rows="2" placeholder="4H 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h4-note" placeholder="4H 備註"></textarea>
   </div>
 
   <div class="card">
@@ -709,12 +719,12 @@ body {
     <div class="flow-row"><span class="flow-label">1H Order Flow Lag</span><div class="flow-btns" id="h1fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h1fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h1fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h1fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save" id="h1-note" rows="2" placeholder="1H 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h1-note" placeholder="1H 備註"></textarea>
   </div>
 
   <div class="card" style="border: 1.5px solid var(--indigo-border); background: var(--indigo-bg);">
     <div class="card-title" style="color: var(--indigo); font-size: 13px; letter-spacing: 0.8px;">📋 執行計劃</div>
-    <textarea class="note-input auto-save" id="plan-note" rows="4" placeholder="今日執行計劃...進場區域、劇本描述..." style="border-color: var(--indigo-border);"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="plan-note" placeholder="今日執行計劃...進場區域、劇本描述..." style="border-color: var(--indigo-border);"></textarea>
   </div>
 
 
@@ -979,19 +989,6 @@ themeBtn.addEventListener('click', toggleTheme);
 
 // 頁面切換
 function showPage(id, el) {
-  // 如果從盤前分析頁面離開，自動儲存並提示
-  const currentActive = document.querySelector('.page.active');
-  if (currentActive && currentActive.id === 'premarket' && id !== 'premarket') {
-    savePlan();
-    // 檢查是否有未填寫的關鍵欄位
-    const plan = document.getElementById('plan-note')?.value?.trim();
-    if (!plan) {
-      if (!confirm('⚠️ 執行計劃尚未填寫，確定要離開盤前分析嗎？')) {
-        return;
-      }
-    }
-  }
-
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1146,7 +1143,6 @@ function updateAllUI() {
 
 // 看板重置
 function resetCockpit() {
-  if (!confirm('確定清除看板今日資料？（盤前分析不受影響）')) return;
   wins = 0; losses = 0; ptsLog = [];
   document.getElementById('shutdown').style.display = 'none';
   document.querySelectorAll('.rule-row').forEach(r => r.classList.remove('done'));
@@ -1247,7 +1243,7 @@ function loadData() {
   } catch(e) {}
 }
 
-function savePlan() { saveData(); updateSummary(); alert('已儲存'); }
+function savePlan() { saveData(); updateSummary(); }
 
 // 匯出紀錄
 function downloadDailyRecord() {
@@ -1386,7 +1382,6 @@ function addLoss() {}
 
 // 盤前清除（獨立）
 function clearPremarket() {
-  if (!confirm('確定清除盤前分析資料？（看板不受影響）')) return;
   ['w-note','d-note','h4-note','h1-note','resistance-note','plan-note'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -1499,6 +1494,17 @@ window.onload = () => {
   }
   loadData();
   updatePsychStatus();
+
+  // 初始化自動增長 textarea
+  document.querySelectorAll('.auto-expand').forEach(textarea => {
+    textarea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = this.scrollHeight + 'px';
+    });
+    // 初始調整
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
 };
 </script>
 </body>

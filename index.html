@@ -303,6 +303,17 @@ body {
 .timer-msg { font-size: 12px; color: var(--text2); margin-top: 4px; }
 .timer-hint { font-size: 12px; color: var(--text3); line-height: 1.5; margin-top: 8px; }
 
+.mg-item {
+  display:flex;align-items:center;gap:6px;
+  padding:6px 8px;border-radius:7px;
+  background:var(--bg3);cursor:pointer;
+  font-size:11px;color:var(--text2);
+  transition:background 0.15s;
+  user-select:none;-webkit-user-select:none;
+}
+.mg-item input { accent-color:var(--blue);width:13px;height:13px;flex-shrink:0;cursor:pointer; }
+.mg-item:has(input:checked) { background:var(--bg2); color:var(--text); font-weight:600; }
+
 .note-input {
   width: 100%;
   background: var(--bg3);
@@ -773,48 +784,78 @@ body {
 
   <!-- 心理狀態檢核 -->
   <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:12px;letter-spacing:0.5px">JARED TENDLER — 現在我在哪個區間？</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px;letter-spacing:0.5px">JARED TENDLER — 心理狀態檢核</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">勾選你現在符合的狀態，自動判斷等級</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
 
       <!-- C級 -->
-      <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 8px;">
+      <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.18);border-radius:10px;padding:10px 8px;">
         <div style="font-size:11px;font-weight:700;color:var(--red);text-align:center;margin-bottom:8px;letter-spacing:0.5px">C 級</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.9;text-align:center">
-          不專心<br>逃避風險<br>猶豫不決<br>沒耐心<br>消極自語<br>懷疑自己<br>拿損益做交易<br>
-          <div style="border-top:1px solid rgba(239,68,68,0.15);margin:6px 0;"></div>
-          不斷追著價格跑<br>容易失去方向<br>想入袋為安<br>不遵守止損規則<br>衝動交易<br>缺乏計畫加碼
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>不專心</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>逃避風險</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>猶豫不決</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>沒耐心</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>消極自語</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>懷疑自己</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>拿損益做交易</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>追著價格跑</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>失去方向</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>想入袋為安</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>不守止損規則</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>衝動交易</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="c" onchange="calcLevel()"><span>缺乏計畫加碼</span></label>
         </div>
       </div>
 
       <!-- B級 -->
-      <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 8px;">
+      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.18);border-radius:10px;padding:10px 8px;">
         <div style="font-size:11px;font-weight:700;color:var(--amber);text-align:center;margin-bottom:8px;letter-spacing:0.5px">B 級</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.9;text-align:center">
-          過度思考<br>關注錯誤市場<br>失去焦點<br>錯失明顯交易<br>盯著損益<br>反應較慢<br>違背直覺<br>
-          <div style="border-top:1px solid rgba(245,158,11,0.15);margin:6px 0;"></div>
-          因果關聯理解弱<br>短線頻繁獲利少<br>不知繼續或出場<br>太快結束交易<br>太注重市場深度<br>不懂解讀波動
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>過度思考</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>關注錯誤市場</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>失去焦點</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>錯失明顯交易</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>盯著損益</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>反應較慢</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>違背直覺</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>短線頻繁獲利少</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>不知繼續或出場</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>太快結束交易</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>太注重市場深度</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="b" onchange="calcLevel()"><span>不懂解讀波動</span></label>
         </div>
       </div>
 
       <!-- A級 -->
-      <div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:10px 8px;">
+      <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.18);border-radius:10px;padding:10px 8px;">
         <div style="font-size:11px;font-weight:700;color:var(--green);text-align:center;margin-bottom:8px;letter-spacing:0.5px">A 級</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.9;text-align:center">
-          非常放鬆<br>當機立斷<br>有耐心<br>有自信<br>相信直覺<br><br><br>
-          <div style="border-top:1px solid rgba(34,197,94,0.15);margin:6px 0;"></div>
-          對市場非常清楚<br>清楚流動性指標<br>清楚位置與價位<br>讓價格靠近目標<br>看見被套牢交易者<br><br>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>非常放鬆</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>當機立斷</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>有耐心</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>有自信</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>相信直覺</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>對市場非常清楚</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>清楚流動性指標</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>清楚位置與價位</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>讓價格靠近目標</span></label>
+          <label class="mg-item"><input type="checkbox" data-level="a" onchange="calcLevel()"><span>看見被套牢交易者</span></label>
         </div>
       </div>
 
     </div>
-    <div style="margin-top:12px;padding:10px 12px;background:var(--bg3);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.7;text-align:center">
-      📌 如果你在 <strong style="color:var(--red)">C 級</strong>——<strong style="color:var(--text)">立刻停手，不要交易</strong><br>
-      如果你在 <strong style="color:var(--amber)">B 級</strong>——<strong style="color:var(--text)">縮小部位，嚴守計劃</strong><br>
-      如果你在 <strong style="color:var(--green)">A 級</strong>——<strong style="color:var(--text)">信任自己，執行計劃</strong>
+
+    <div id="mg-result" style="display:none;margin-top:4px;padding:12px 14px;border-radius:10px;text-align:center;transition:all 0.3s">
+      <div id="mg-result-level" style="font-size:16px;font-weight:700;margin-bottom:4px"></div>
+      <div id="mg-result-action" style="font-size:12px;line-height:1.7"></div>
     </div>
+
+    <button onclick="resetMG()" style="margin-top:10px;width:100%;padding:8px;background:var(--bg3);border:none;border-radius:8px;color:var(--text2);font-size:12px;cursor:pointer">清除勾選</button>
   </div>
 
-  <!-- 靜心語 -->
+    <!-- 靜心語 -->
   <div class="card" style="border-left:3px solid var(--amber);background:var(--amber-bg)">
     <div style="font-size:13px;line-height:1.9;color:var(--text2);font-style:italic">
       「你無法在沸騰的水中看清自己的倒影。<br>
@@ -827,6 +868,46 @@ body {
 </div>
 
 <script>
+
+function calcLevel() {
+  const cChecked = document.querySelectorAll('input[data-level="c"]:checked').length;
+  const bChecked = document.querySelectorAll('input[data-level="b"]:checked').length;
+  const aChecked = document.querySelectorAll('input[data-level="a"]:checked').length;
+  const total = cChecked + bChecked + aChecked;
+  const result = document.getElementById('mg-result');
+  const levelEl = document.getElementById('mg-result-level');
+  const actionEl = document.getElementById('mg-result-action');
+
+  if (total === 0) { result.style.display = 'none'; return; }
+
+  result.style.display = 'block';
+
+  if (cChecked >= 1) {
+    result.style.background = 'rgba(239,68,68,0.08)';
+    result.style.border = '1.5px solid rgba(239,68,68,0.25)';
+    levelEl.style.color = 'var(--red)';
+    levelEl.textContent = '⚠️ C 級狀態';
+    actionEl.innerHTML = '<strong style="color:var(--text)">立刻停手，不要交易</strong><br>現在進場只會讓損失擴大';
+  } else if (bChecked >= 2) {
+    result.style.background = 'rgba(245,158,11,0.08)';
+    result.style.border = '1.5px solid rgba(245,158,11,0.25)';
+    levelEl.style.color = 'var(--amber)';
+    levelEl.textContent = '⚡ B 級狀態';
+    actionEl.innerHTML = '<strong style="color:var(--text)">縮小部位，嚴守計劃</strong><br>只執行最高把握的設置';
+  } else {
+    result.style.background = 'rgba(34,197,94,0.08)';
+    result.style.border = '1.5px solid rgba(34,197,94,0.25)';
+    levelEl.style.color = 'var(--green)';
+    levelEl.textContent = '✅ A 級狀態';
+    actionEl.innerHTML = '<strong style="color:var(--text)">信任自己，執行計劃</strong><br>這是你最佳的交易狀態';
+  }
+}
+
+function resetMG() {
+  document.querySelectorAll('input[data-level]').forEach(el => el.checked = false);
+  document.getElementById('mg-result').style.display = 'none';
+}
+
 // 主題切換
 const themeBtn = document.getElementById('themeBtn');
 function toggleTheme() {

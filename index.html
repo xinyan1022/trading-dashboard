@@ -596,16 +596,16 @@ body {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
       <div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:4px">目前等待</div>
-        <textarea id="waiting-note" class="note-input auto-expand" placeholder="等待什麼訊號..."></textarea>
+        <textarea id="waiting-note" class="note-input auto-expand" style="min-height:80px" placeholder="等待什麼訊號..."></textarea>
       </div>
       <div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:4px">關鍵價位</div>
-        <textarea id="level-note" class="note-input auto-expand" placeholder="關鍵支撐 / 壓力..."></textarea>
+        <textarea id="level-note" class="note-input auto-expand" style="min-height:80px" placeholder="關鍵支撐 / 壓力..."></textarea>
       </div>
     </div>
     <div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:4px">盤中觀察</div>
-      <textarea id="intraday-note" class="note-input auto-expand" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
+      <textarea id="intraday-note" class="note-input auto-expand" style="min-height:80px" placeholder="走勢觀察、與盤前預期的差異..."></textarea>
     </div>
   </div>
 
@@ -739,7 +739,7 @@ body {
     <div class="flow-row"><span class="flow-label">Weekly Order Flow Lag</span><div class="flow-btns" id="wfl"><button class="flow-btn" data-val="bull" onclick="setFlow('wfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('wfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('wfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="w-note" placeholder="Weekly 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="w-note" style="min-height:80px" placeholder="Weekly 備註"></textarea>
     <div class="img-upload-area" id="w-img-upload" onclick="document.getElementById('w-img-input').click()">
       <input type="file" id="w-img-input" accept="image/*" onchange="loadImg('w-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 Weekly 圖表截圖</div>
@@ -755,7 +755,7 @@ body {
     <div class="flow-row"><span class="flow-label">Daily Order Flow Lag</span><div class="flow-btns" id="dfl"><button class="flow-btn" data-val="bull" onclick="setFlow('dfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('dfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('dfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="d-note" placeholder="Daily 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="d-note" style="min-height:80px" placeholder="Daily 備註"></textarea>
     <div class="img-upload-area" id="d-img-upload" onclick="document.getElementById('d-img-input').click()">
       <input type="file" id="d-img-input" accept="image/*" onchange="loadImg('d-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 Daily 圖表截圖</div>
@@ -771,7 +771,7 @@ body {
     <div class="flow-row"><span class="flow-label">4H Order Flow Lag</span><div class="flow-btns" id="h4fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h4fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h4fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h4fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="h4-note" placeholder="4H 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h4-note" style="min-height:80px" placeholder="4H 備註"></textarea>
     <div class="img-upload-area" id="h4-img-upload" onclick="document.getElementById('h4-img-input').click()">
       <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg('h4-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 4H 圖表截圖</div>
@@ -787,7 +787,7 @@ body {
     <div class="flow-row"><span class="flow-label">1H Order Flow Lag</span><div class="flow-btns" id="h1fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h1fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h1fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h1fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="h1-note" placeholder="1H 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h1-note" style="min-height:80px" placeholder="1H 備註"></textarea>
     <div class="img-upload-area" id="h1-img-upload" onclick="document.getElementById('h1-img-input').click()">
       <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg('h1-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 1H 圖表截圖</div>
@@ -803,7 +803,7 @@ body {
     <div class="flow-row"><span class="flow-label">15M Order Flow Lag</span><div class="flow-btns" id="h15fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h15fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h15fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h15fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h15-prem"><button class="array-btn" data-val="dis" onclick="setArray('h15-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="h15-note" placeholder="15M 備註"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px" placeholder="✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多&#10;❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場&#10;&#10;📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空&#10;❌ 空方失敗條件：價格收復 ___ → 不進場&#10;&#10;⏳ 今日優先執行：多方 / 空方 / 觀望"></textarea>
     <div class="img-upload-area" id="h15-img-upload" onclick="document.getElementById('h15-img-input').click()">
       <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
@@ -816,7 +816,7 @@ body {
 
   <div class="card" style="border: 1.5px solid var(--indigo-border); background: var(--indigo-bg);">
     <div class="card-title" style="color: var(--indigo); font-size: 13px; letter-spacing: 0.8px;">📋 執行計劃</div>
-    <textarea class="note-input auto-save auto-expand" id="plan-note" placeholder="今日執行計劃...進場區域、劇本描述..." style="border-color: var(--indigo-border);"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="plan-note" placeholder="今日優先劇本：等 ___ 訊號，進場區域 ___，止損放 ___" style="border-color: var(--indigo-border);min-height:80px"></textarea>
   </div>
 
 

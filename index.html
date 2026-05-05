@@ -740,7 +740,7 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="w-note" placeholder="Weekly 備註"></textarea>
-    <div class="img-upload-area" onclick="document.getElementById('w-img-input').click()">
+    <div class="img-upload-area" id="w-img-upload" onclick="document.getElementById('w-img-input').click()">
       <input type="file" id="w-img-input" accept="image/*" onchange="loadImg('w-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 Weekly 圖表截圖</div>
     </div>
@@ -756,7 +756,7 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="d-note" placeholder="Daily 備註"></textarea>
-    <div class="img-upload-area" onclick="document.getElementById('d-img-input').click()">
+    <div class="img-upload-area" id="d-img-upload" onclick="document.getElementById('d-img-input').click()">
       <input type="file" id="d-img-input" accept="image/*" onchange="loadImg('d-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 Daily 圖表截圖</div>
     </div>
@@ -772,7 +772,7 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h4-note" placeholder="4H 備註"></textarea>
-    <div class="img-upload-area" onclick="document.getElementById('h4-img-input').click()">
+    <div class="img-upload-area" id="h4-img-upload" onclick="document.getElementById('h4-img-input').click()">
       <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg('h4-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 4H 圖表截圖</div>
     </div>
@@ -788,13 +788,29 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h1-note" placeholder="1H 備註"></textarea>
-    <div class="img-upload-area" onclick="document.getElementById('h1-img-input').click()">
+    <div class="img-upload-area" id="h1-img-upload" onclick="document.getElementById('h1-img-input').click()">
       <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg('h1-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 1H 圖表截圖</div>
     </div>
     <div class="img-preview" id="h1-img-preview">
       <img id="h1-img-img" src="" alt="1H chart" onclick="window.open(this.src)">
       <button class="img-remove" onclick="removeImg('h1-img')">✕</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Entry Area — 15M</div>
+    <div class="flow-row"><span class="flow-label">15M Order Flow Lag</span><div class="flow-btns" id="h15fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h15fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h15fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h15fl','none',this)">None</button></div></div>
+    <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h15-prem"><button class="array-btn" data-val="dis" onclick="setArray('h15-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-prem','res',this)">Respect</button></div></div>
+    <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
+    <textarea class="note-input auto-save auto-expand" id="h15-note" placeholder="15M 備註"></textarea>
+    <div class="img-upload-area" id="h15-img-upload" onclick="document.getElementById('h15-img-input').click()">
+      <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
+    </div>
+    <div class="img-preview" id="h15-img-preview">
+      <img id="h15-img-img" src="" alt="15M chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('h15-img')">✕</button>
     </div>
   </div>
 
@@ -1339,9 +1355,11 @@ function loadImg(id, input) {
 function showImg(id, data) {
   const preview = document.getElementById(id + '-preview');
   const img = document.getElementById(id + '-img');
+  const upload = document.getElementById(id + '-upload');
   if (preview && img && data) {
     img.src = data;
     preview.style.display = 'block';
+    if (upload) upload.style.display = 'none';
   }
 }
 
@@ -1349,14 +1367,16 @@ function removeImg(id) {
   localStorage.removeItem('chart_img_' + id);
   const preview = document.getElementById(id + '-preview');
   const img = document.getElementById(id + '-img');
+  const upload = document.getElementById(id + '-upload');
   if (preview) preview.style.display = 'none';
   if (img) img.src = '';
+  if (upload) upload.style.display = 'block';
   const input = document.getElementById(id + '-input');
   if (input) input.value = '';
 }
 
 function loadAllImgs() {
-  ['w-img','d-img','h4-img','h1-img'].forEach(id => {
+  ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
     const data = localStorage.getItem('chart_img_' + id);
     if (data) showImg(id, data);
   });
@@ -1434,6 +1454,7 @@ ${ptsDetail}
 | Daily | ${getFlow('dfl')} | ${getArray('d-prem')} | ${getArray('d-disc')} |
 | 4H | ${getFlow('h4fl')} | ${getArray('h4-prem')} | ${getArray('h4-disc')} |
 | 1H | ${getFlow('h1fl')} | ${getArray('h1-prem')} | ${getArray('h1-disc')} |
+| 15M | ${getFlow('h15fl')} | ${getArray('h15-prem')} | ${getArray('h15-disc')} |
 
 ### Weekly 備註
 ${document.getElementById('w-note')?.value || '無'}
@@ -1458,6 +1479,12 @@ ${document.getElementById('h1-note')?.value || '無'}
 
 ### 1H 圖表
 ${localStorage.getItem('chart_img_h1-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
+
+### 15M 備註
+${document.getElementById('h15-note')?.value || '無'}
+
+### 15M 圖表
+${localStorage.getItem('chart_img_h15-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
 
 ### 執行計劃
 ${document.getElementById('plan-note')?.value || '無'}

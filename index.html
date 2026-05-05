@@ -338,6 +338,51 @@ body {
   field-sizing: content;
 }
 
+
+/* 圖片上傳區塊 */
+.img-upload-area {
+  margin-top: 8px;
+  border: 1.5px dashed var(--border2);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  position: relative;
+}
+.img-upload-area:hover { border-color: var(--blue); }
+.img-upload-area input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.img-upload-area .upload-hint {
+  font-size: 11px; color: var(--text3); pointer-events: none;
+}
+.img-upload-area .upload-hint span { font-size: 18px; display: block; margin-bottom: 4px; }
+.img-preview {
+  margin-top: 8px;
+  position: relative;
+  display: none;
+}
+.img-preview img {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  cursor: pointer;
+}
+.img-preview .img-remove {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
 .chart-box {
   width: 100%;
   height: 180px;
@@ -695,6 +740,14 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="w-note" placeholder="Weekly 備註"></textarea>
+    <div class="img-upload-area" onclick="document.getElementById('w-img-input').click()">
+      <input type="file" id="w-img-input" accept="image/*" onchange="loadImg('w-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳 Weekly 圖表截圖</div>
+    </div>
+    <div class="img-preview" id="w-img-preview">
+      <img id="w-img-img" src="" alt="Weekly chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('w-img')">✕</button>
+    </div>
   </div>
 
   <div class="card">
@@ -703,6 +756,14 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="d-note" placeholder="Daily 備註"></textarea>
+    <div class="img-upload-area" onclick="document.getElementById('d-img-input').click()">
+      <input type="file" id="d-img-input" accept="image/*" onchange="loadImg('d-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳 Daily 圖表截圖</div>
+    </div>
+    <div class="img-preview" id="d-img-preview">
+      <img id="d-img-img" src="" alt="Daily chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('d-img')">✕</button>
+    </div>
   </div>
 
   <div class="card">
@@ -711,6 +772,14 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h4-note" placeholder="4H 備註"></textarea>
+    <div class="img-upload-area" onclick="document.getElementById('h4-img-input').click()">
+      <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg('h4-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳 4H 圖表截圖</div>
+    </div>
+    <div class="img-preview" id="h4-img-preview">
+      <img id="h4-img-img" src="" alt="4H chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('h4-img')">✕</button>
+    </div>
   </div>
 
   <div class="card">
@@ -719,6 +788,14 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h1-note" placeholder="1H 備註"></textarea>
+    <div class="img-upload-area" onclick="document.getElementById('h1-img-input').click()">
+      <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg('h1-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳 1H 圖表截圖</div>
+    </div>
+    <div class="img-preview" id="h1-img-preview">
+      <img id="h1-img-img" src="" alt="1H chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('h1-img')">✕</button>
+    </div>
   </div>
 
   <div class="card" style="border: 1.5px solid var(--indigo-border); background: var(--indigo-bg);">
@@ -930,6 +1007,7 @@ function calcLevel() {
     actionEl.innerHTML = '<strong style="color:var(--text)">信任自己，執行計劃</strong><br>這是你最佳的交易狀態';
   }
   updatePsychStatus();
+  loadAllImgs();
 }
 
 function resetMG() {
@@ -1245,6 +1323,45 @@ function loadData() {
 function savePlan() { saveData(); updateSummary(); }
 
 // 匯出紀錄
+
+function loadImg(id, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = e.target.result;
+    localStorage.setItem('chart_img_' + id, data);
+    showImg(id, data);
+  };
+  reader.readAsDataURL(file);
+}
+
+function showImg(id, data) {
+  const preview = document.getElementById(id + '-preview');
+  const img = document.getElementById(id + '-img');
+  if (preview && img && data) {
+    img.src = data;
+    preview.style.display = 'block';
+  }
+}
+
+function removeImg(id) {
+  localStorage.removeItem('chart_img_' + id);
+  const preview = document.getElementById(id + '-preview');
+  const img = document.getElementById(id + '-img');
+  if (preview) preview.style.display = 'none';
+  if (img) img.src = '';
+  const input = document.getElementById(id + '-input');
+  if (input) input.value = '';
+}
+
+function loadAllImgs() {
+  ['w-img','d-img','h4-img','h1-img'].forEach(id => {
+    const data = localStorage.getItem('chart_img_' + id);
+    if (data) showImg(id, data);
+  });
+}
+
 function downloadDailyRecord() {
   const today = new Date().toLocaleDateString('zh-TW');
   const total = wins + losses;
@@ -1321,14 +1438,26 @@ ${ptsDetail}
 ### Weekly 備註
 ${document.getElementById('w-note')?.value || '無'}
 
+### Weekly 圖表
+${localStorage.getItem('chart_img_w-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
+
 ### Daily 備註
 ${document.getElementById('d-note')?.value || '無'}
+
+### Daily 圖表
+${localStorage.getItem('chart_img_d-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
 
 ### 4H 備註
 ${document.getElementById('h4-note')?.value || '無'}
 
+### 4H 圖表
+${localStorage.getItem('chart_img_h4-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
+
 ### 1H 備註
 ${document.getElementById('h1-note')?.value || '無'}
+
+### 1H 圖表
+${localStorage.getItem('chart_img_h1-img') ? '（圖片已儲存於本機，請手動附加截圖）' : '無'}
 
 ### 執行計劃
 ${document.getElementById('plan-note')?.value || '無'}
@@ -1493,6 +1622,7 @@ window.onload = () => {
   }
   loadData();
   updatePsychStatus();
+  loadAllImgs();
 
   // 初始化自動增長 textarea
   document.querySelectorAll('.auto-expand').forEach(textarea => {

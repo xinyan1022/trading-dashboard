@@ -664,7 +664,7 @@ body {
         onkeydown="if(event.key==='Enter')recordTrade()">
       <button class="btn btn-blue" onclick="recordTrade()" style="white-space:nowrap">確認出場</button>
     </div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入後會彈出確認視窗，確認後才會記錄。停損將自動啟動 30 分鐘冷卻計時器。</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入點數後按確認出場或 Enter 即記錄，停損自動啟動 15 分鐘冷卻。</div>
 
     <!-- 出場理由 -->
     <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:10px">出場理由</div>
@@ -680,69 +680,65 @@ body {
     </div>
   </div>
 
-  <div class="grid2">
-    <div class="card">
-    <div class="card-title">交易統計圖表</div>
-    <div class="chart-box">
-      <div class="pie-wrap">
-        <svg width="140" height="140" viewBox="0 0 140 140">
-          <circle cx="70" cy="70" r="62" fill="none" stroke="var(--bg3)" stroke-width="14"></circle>
-          <circle cx="70" cy="70" r="62" fill="none" stroke="var(--green)" stroke-width="14" stroke-dasharray="0 390" transform="rotate(-90 70 70)" id="pieWin"></circle>
-          <circle cx="70" cy="70" r="62" fill="none" stroke="var(--red)" stroke-width="14" stroke-dasharray="0 390" transform="rotate(-90 70 70)" id="pieLoss"></circle>
-        </svg>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-          <div style="font-size:22px;font-weight:700" id="winRate">0%</div>
-          <div style="font-size:12px;color:var(--text3)">勝率</div>
+  <!-- 停損語錄 -->
+  <div id="loss-quote" style="display:none;margin-bottom:12px;opacity:0;transition:opacity 0.5s ease;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(217,119,6,0.18);">
+    <div style="background:linear-gradient(135deg,rgba(217,119,6,0.15),rgba(217,119,6,0.05));border:2px solid var(--amber-border);border-radius:14px;padding:16px 18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:4px;height:36px;background:var(--amber);border-radius:2px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:10px;color:var(--amber);font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px" id="loss-quote-source"></div>
+          <div style="font-size:11px;color:var(--text3)">冷靜下來，回到計劃</div>
         </div>
       </div>
-      <div class="bar-wrap">
-        <div class="bar" style="height:0%;background:var(--green)" id="barWin"><div class="bar-text" id="barWinText">0</div></div>
-        <div class="bar" style="height:0%;background:var(--red)" id="barLoss"><div class="bar-text" id="barLossText">0</div></div>
+      <div id="loss-quote-text" style="font-size:14px;color:var(--text);line-height:2;white-space:pre-line;padding-left:12px;border-left:1px solid var(--amber-border)"></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">交易統計圖表</div>
+      <div class="chart-box">
+        <div class="pie-wrap">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="62" fill="none" stroke="var(--bg3)" stroke-width="14"></circle>
+            <circle cx="70" cy="70" r="62" fill="none" stroke="var(--green)" stroke-width="14" stroke-dasharray="0 390" transform="rotate(-90 70 70)" id="pieWin"></circle>
+            <circle cx="70" cy="70" r="62" fill="none" stroke="var(--red)" stroke-width="14" stroke-dasharray="0 390" transform="rotate(-90 70 70)" id="pieLoss"></circle>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+            <div style="font-size:22px;font-weight:700" id="winRate">0%</div>
+            <div style="font-size:12px;color:var(--text3)">勝率</div>
+          </div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:0%;background:var(--green)" id="barWin"><div class="bar-text" id="barWinText">0</div></div>
+          <div class="bar" style="height:0%;background:var(--red)" id="barLoss"><div class="bar-text" id="barLossText">0</div></div>
+        </div>
       </div>
     </div>
-  </div>
 
-    <div class="card">
-    <div class="card-title">停損冷卻計時器</div>
-    <div class="timer-active" id="timer-active">
-      <div class="timer-val" id="timer-val">30:00</div>
-      <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">停損冷卻計時器</div>
+      <div class="timer-active" id="timer-active">
+        <div class="timer-val" id="timer-val">30:00</div>
+        <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
+      </div>
+      <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 15 分鐘冷卻</button>
+      <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px" id="btn-cancel">取消計時</button>
+      <div class="timer-hint">停損後自動啟動，關閉所有圖表，去休息。時間到前不回來看盤。</div>
     </div>
-    <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 30 分鐘冷卻</button>
-    <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px" id="btn-cancel">取消計時</button>
-    <div class="timer-hint">停損後自動啟動，關閉所有圖表，去休息。時間到前不回來看盤。</div>
-  </div>
-  </div>
 
-  <div class="grid2">
-    <div class="card">
-    <div class="card-title">今日操作</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-blue" onclick="downloadDailyRecord()">下載 Markdown 紀錄</button>
-      <button class="btn btn-muted" onclick="resetCockpit()">清除看板今日</button>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">📦 今日紀錄</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-amber" onclick="downloadDailyZip()" style="width:100%">⬇️ 下載 ZIP</button>
+        <label class="btn btn-blue" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:100%">
+          📂 從 ZIP 還原
+          <input type="file" accept=".zip" style="display:none" onchange="restoreFromZip(this)">
+        </label>
+        <button class="btn btn-muted" onclick="resetCockpit()" style="width:100%">🗑 清除今日看板</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">ZIP 包含日誌、資料、圖表截圖</div>
     </div>
-    <div style="font-size:12px;color:var(--text3);margin-top:8px">每日收盤後匯出，清除只會重置看板資料，不影響盤前分析</div>
-  </div>
-
-    <div class="card">
-    <div class="card-title">📦 打包下載今日紀錄</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-      <button class="btn btn-amber" onclick="downloadDailyZip()">⬇️ 下載 ZIP 壓縮檔</button>
-      <label class="btn btn-blue" style="cursor:pointer;display:inline-flex;align-items:center;">
-        📂 從 ZIP 還原
-        <input type="file" accept=".zip" style="display:none" onchange="restoreFromZip(this)">
-      </label>
-    </div>
-    <div style="font-size:12px;color:var(--text3);line-height:1.7">
-      一鍵打包今日所有資料：<br>
-      • 交易日誌.md（文字紀錄）<br>
-      • data.json（完整交易資料）<br>
-      • 所有圖表截圖（Weekly / Daily / 4H / 1H / 15M）<br>
-      <br>
-      檔名自動帶日期，解壓後即可歸檔到資料夾<br>
-      「從 ZIP 還原」可直接載入先前下載的 ZIP 備份
-    </div>
-  </div>
   </div>
 
   <div class="footer">Process > Outcome · Less is More</div>
@@ -1017,7 +1013,7 @@ body {
 let losses = 0;
 let wins = 0;
 let ptsLog = [];
-let timerSec = 1800;
+let timerSec = 900;
 let timerInterval = null;
 let timerRunning = false;
 const MAX_LOSS = 4;
@@ -1186,12 +1182,6 @@ function recordTrade() {
   const input = document.getElementById('pts-input');
   const val = parseFloat(input.value);
   if (isNaN(val) || val === 0) return;
-
-  const type = val > 0 ? '獲利' : '停損';
-  const sign = val > 0 ? '+' : '';
-  const confirmMsg = `確認記錄這筆出場？\n\n類型：${type}\n點數：${sign}${val} 點\n金額：${sign}${val * 10} 元\n\n${val < 0 ? '⚠️ 停損將自動啟動 30 分鐘冷卻計時器' : ''}`;
-
-  if (!confirm(confirmMsg)) return;
 
   input.value = '';
 
@@ -1502,7 +1492,6 @@ function updateAllUI() {
 
 // ==================== 看板重置 ====================
 function resetCockpit() {
-  if (!confirm('確定要清除看板所有資料？此操作無法復原。')) return;
   wins = 0; losses = 0; ptsLog = []; exitReasons = [];
   const shutdown = document.getElementById('shutdown');
   if (shutdown) shutdown.style.display = 'none';
@@ -1545,10 +1534,41 @@ function updateChart() {
   if (barLossText) barLossText.textContent = losses;
 }
 
+// ==================== ARJO 語錄（停損觸發）====================
+const ARJO_QUOTES = [
+  { source: 'ARJO — 症狀不是問題本身', text: '停損後反向操作，是症狀。\n核心問題是：你不清楚自己在等什麼。\n當你能明確定義每個條件，猜測就消失了。' },
+  { source: 'ARJO — 讓市場說服你', text: '打開圖表，第一個問題是：\n「這張圖我不喜歡什麼？」\n如果做 X，我找多。如果沒有，我等待。' },
+  { source: 'ARJO — 兩個指標', text: '永遠追蹤兩件事：\n① 交易計劃的表現\n② 你自己的表現\n縮小兩者之間的落差，就是你唯一要做的事。' },
+  { source: 'ARJO — 答案在日誌裡', text: '所有問題的答案都在你的交易日誌裡。\n虧損後不要去社群媒體找答案——\n打開日誌，數據才是真相。' },
+  { source: 'ARJO — 接受機率', text: '你不需要解釋每一個細微走勢。\n市場是機率，不是確定性。\n接受虧損是過程的一部分，才有平靜。' },
+  { source: 'ARJO — 平靜', text: '你無法在沸騰的水中看清自己的倒影。\n同樣地，憤怒時你看不清真相。\n當水平靜了，清晰才會到來。' },
+];
+
+function showLossQuote() {
+  const q = ARJO_QUOTES[Math.floor(Math.random() * ARJO_QUOTES.length)];
+  const box = document.getElementById('loss-quote');
+  const src = document.getElementById('loss-quote-source');
+  const txt = document.getElementById('loss-quote-text');
+  if (!box || !src || !txt) return;
+  src.textContent = q.source;
+  txt.style.whiteSpace = 'pre-line';
+  txt.textContent = q.text;
+  box.style.opacity = '0';
+  box.style.display = 'block';
+  requestAnimationFrame(() => { box.style.opacity = '1'; });
+}
+
+function hideLossQuote() {
+  const box = document.getElementById('loss-quote');
+  if (!box) return;
+  box.style.opacity = '0';
+  setTimeout(() => { box.style.display = 'none'; }, 600);
+}
+
 // ==================== 計時器 ====================
 function startTimer() {
   clearInterval(timerInterval);
-  timerSec = 1800;
+  timerSec = 900;
   timerRunning = true;
   const timerActive = document.getElementById('timer-active');
   const btnStart = document.getElementById('btn-start');
@@ -1556,6 +1576,7 @@ function startTimer() {
   if (timerActive) timerActive.style.display = 'block';
   if (btnStart) btnStart.style.display = 'none';
   if (btnCancel) btnCancel.style.display = 'block';
+  showLossQuote();
 
   updateTimerStatus();
   timerInterval = setInterval(() => {
@@ -1578,6 +1599,7 @@ function cancelTimer() {
   if (timerActive) timerActive.style.display = 'none';
   if (btnStart) btnStart.style.display = 'block';
   if (btnCancel) btnCancel.style.display = 'none';
+  hideLossQuote();
   updateTimerStatus();
   saveData();
 }
@@ -1679,7 +1701,7 @@ function loadData() {
     wins = data.wins || 0;
     losses = data.losses || 0;
     ptsLog = data.ptsLog || [];
-    timerSec = data.timerSec || 1800;
+    timerSec = data.timerSec || 900;
     timerRunning = data.timerRunning || false;
 
     // 載入方向設定

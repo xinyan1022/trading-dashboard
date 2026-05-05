@@ -726,15 +726,17 @@ body {
   </div>
 
     <div class="card">
-    <div class="card-title">資料備份與還原</div>
+    <div class="card-title">📦 打包下載今日紀錄</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-      <button class="btn btn-amber" onclick="exportBackup()">📦 匯出 JSON 備份</button>
-      <button class="btn btn-muted" onclick="document.getElementById('import-file').click()">📂 導入 JSON 備份</button>
-      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this)">
+      <button class="btn btn-amber" onclick="downloadDailyZip()">⬇️ 下載 ZIP 壓縮檔</button>
     </div>
     <div style="font-size:12px;color:var(--text3);line-height:1.7">
-      JSON 備份會完整儲存所有資料（盤前分析、看板狀態、交易紀錄）<br>
-      建議每週備份一次，存在固定資料夾，資料不見時可完整還原
+      一鍵打包今日所有資料：<br>
+      • 交易日誌.md（文字紀錄）<br>
+      • data.json（完整交易資料）<br>
+      • 所有圖表截圖（Weekly / Daily / 4H / 1H / 15M）<br>
+      <br>
+      檔名自動帶日期，解壓後即可歸檔到資料夾
     </div>
   </div>
   </div>

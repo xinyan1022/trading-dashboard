@@ -494,6 +494,21 @@ body {
 
 .save-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .footer { text-align: center; font-size: 12px; color: var(--text3); padding: 12px 0 16px; }
+
+/* 出場理由 */
+.exit-reason-row {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.exit-reason-row select:focus {
+  border-color: var(--blue) !important;
+}
+.exit-reason-row input:focus {
+  border-color: var(--blue);
+}
 </style>
 <base target="_blank">
 <base target="_blank">
@@ -651,6 +666,10 @@ body {
       <button class="btn btn-blue" onclick="recordTrade()" style="white-space:nowrap">確認出場</button>
     </div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入後會彈出確認視窗，確認後才會記錄。停損將自動啟動 30 分鐘冷卻計時器。</div>
+
+    <!-- 出場理由 -->
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:10px">出場理由</div>
+    <div id="exit-reasons" style="margin-bottom:12px"></div>
 
     <!-- 明細 -->
     <div id="pts-log" style="font-size:13px;color:var(--text2);max-height:130px;overflow-y:auto;line-height:2.2"></div>
@@ -1186,8 +1205,213 @@ function recordTrade() {
     startTimer(); // 停損自動啟動冷卻
   }
 
+  // 新增出場理由選擇器
+  addExitReason(ptsLog.length - 1, val);
+
   updateAllUI();
   saveData();
+}
+
+
+// ==================== 出場理由 ====================
+const EXIT_REASONS = [
+  { value: 'plan_tp', label: '✅ 依計劃止盈', color: 'var(--green)' },
+  { value: 'plan_sl', label: '✅ 依計劃止損', color: 'var(--green)' },
+  { value: 'early_profit', label: '⚡ 提早獲利了結', color: 'var(--amber)' },
+  { value: 'panic_sl', label: '😰 恐慌提早止損', color: 'var(--red)' },
+  { value: 'wrong_direction', label: '🔄 方向判斷錯誤', color: 'var(--red)' },
+  { value: 'forced_exit', label: '⏰ 時間到強制出場', color: 'var(--text2)' },
+  { value: 'other', label: '📌 其他', color: 'var(--text2)' }
+];
+
+let exitReasons = []; // 儲存每筆交易的理由
+
+function addExitReason(index, val) {
+  const container = document.getElementById('exit-reasons');
+  if (!container) return;
+
+  const type = val > 0 ? '獲利' : '停損';
+  const color = val > 0 ? 'var(--green)' : 'var(--red)';
+  const sign = val > 0 ? '+' : '';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'exit-reason-row';
+  wrapper.dataset.index = index;
+  wrapper.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  `;
+
+  const info = document.createElement('div');
+  info.style.cssText = 'font-size: 13px; font-weight: 600; color: ' + color + '; white-space: nowrap; min-width: 120px;';
+  info.textContent = `第${index + 1}筆 ${type}｜${sign}${val}點`;
+
+  const select = document.createElement('select');
+  select.style.cssText = `
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 7px 10px;
+    cursor: pointer;
+    outline: none;
+  `;
+  select.innerHTML = '<option value="">選擇理由...</option>' +
+    EXIT_REASONS.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
+
+  select.addEventListener('change', function() {
+    exitReasons[index] = this.value;
+    saveData();
+    // 更新樣式
+    const selected = EXIT_REASONS.find(r => r.value === this.value);
+    if (selected) {
+      this.style.borderColor = selected.color;
+      this.style.color = selected.color;
+    }
+  });
+
+  const noteInput = document.createElement('input');
+  noteInput.type = 'text';
+  noteInput.placeholder = '補充說明（選填）';
+  noteInput.style.cssText = `
+    flex: 1.5;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+  `;
+  noteInput.addEventListener('blur', function() {
+    if (!exitReasons[index]) exitReasons[index] = {};
+    if (typeof exitReasons[index] === 'string') {
+      exitReasons[index] = { reason: exitReasons[index], note: this.value };
+    } else {
+      exitReasons[index].note = this.value;
+    }
+    saveData();
+  });
+
+  wrapper.appendChild(info);
+  wrapper.appendChild(select);
+  wrapper.appendChild(noteInput);
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+}
+
+function renderExitReasons() {
+  const container = document.getElementById('exit-reasons');
+  if (!container) return;
+  container.innerHTML = '';
+
+  ptsLog.forEach((val, index) => {
+    const type = val > 0 ? '獲利' : '停損';
+    const color = val > 0 ? 'var(--green)' : 'var(--red)';
+    const sign = val > 0 ? '+' : '';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'exit-reason-row';
+    wrapper.dataset.index = index;
+    wrapper.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: var(--bg3);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    `;
+
+    const info = document.createElement('div');
+    info.style.cssText = 'font-size: 13px; font-weight: 600; color: ' + color + '; white-space: nowrap; min-width: 120px;';
+    info.textContent = `第${index + 1}筆 ${type}｜${sign}${val}點`;
+
+    const select = document.createElement('select');
+    select.style.cssText = `
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      cursor: pointer;
+      outline: none;
+    `;
+    select.innerHTML = '<option value="">選擇理由...</option>' +
+      EXIT_REASONS.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
+
+    // 恢復已儲存的值
+    const saved = exitReasons[index];
+    let savedReason = '';
+    let savedNote = '';
+    if (saved) {
+      if (typeof saved === 'string') {
+        savedReason = saved;
+      } else if (typeof saved === 'object') {
+        savedReason = saved.reason || '';
+        savedNote = saved.note || '';
+      }
+    }
+    if (savedReason) {
+      select.value = savedReason;
+      const selected = EXIT_REASONS.find(r => r.value === savedReason);
+      if (selected) {
+        select.style.borderColor = selected.color;
+        select.style.color = selected.color;
+      }
+    }
+
+    select.addEventListener('change', function() {
+      const currentNote = typeof exitReasons[index] === 'object' ? (exitReasons[index]?.note || '') : '';
+      exitReasons[index] = { reason: this.value, note: currentNote };
+      saveData();
+      const selected = EXIT_REASONS.find(r => r.value === this.value);
+      if (selected) {
+        this.style.borderColor = selected.color;
+        this.style.color = selected.color;
+      }
+    });
+
+    const noteInput = document.createElement('input');
+    noteInput.type = 'text';
+    noteInput.placeholder = '補充說明（選填）';
+    noteInput.value = savedNote;
+    noteInput.style.cssText = `
+      flex: 1.5;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      outline: none;
+    `;
+    noteInput.addEventListener('blur', function() {
+      const currentReason = typeof exitReasons[index] === 'object' ? (exitReasons[index]?.reason || '') : (exitReasons[index] || '');
+      exitReasons[index] = { reason: currentReason, note: this.value };
+      saveData();
+    });
+
+    wrapper.appendChild(info);
+    wrapper.appendChild(select);
+    wrapper.appendChild(noteInput);
+    container.appendChild(wrapper);
+  });
 }
 
 function updateAllUI() {
@@ -1265,6 +1489,9 @@ function updateAllUI() {
     log.scrollTop = log.scrollHeight;
   }
 
+  // 出場理由
+  renderExitReasons();
+
   // 圖表
   updateChart();
 }
@@ -1272,7 +1499,7 @@ function updateAllUI() {
 // ==================== 看板重置 ====================
 function resetCockpit() {
   if (!confirm('確定要清除看板所有資料？此操作無法復原。')) return;
-  wins = 0; losses = 0; ptsLog = [];
+  wins = 0; losses = 0; ptsLog = []; exitReasons = [];
   const shutdown = document.getElementById('shutdown');
   if (shutdown) shutdown.style.display = 'none';
   document.querySelectorAll('#cockpit .rule-row').forEach(r => r.classList.remove('done'));
@@ -1283,6 +1510,8 @@ function resetCockpit() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const exitContainer = document.getElementById('exit-reasons');
+  if (exitContainer) exitContainer.innerHTML = '';
   cancelTimer();
   updateAllUI();
   saveData();
@@ -1383,7 +1612,8 @@ function saveData() {
       c: Array.from(document.querySelectorAll('input[data-level="c"]:checked')).map((el, i) => i),
       b: Array.from(document.querySelectorAll('input[data-level="b"]:checked')).map((el, i) => i),
       a: Array.from(document.querySelectorAll('input[data-level="a"]:checked')).map((el, i) => i)
-    }
+    },
+    exitReasons: exitReasons
   };
 
   // 方向設定
@@ -1501,6 +1731,11 @@ function loadData() {
           if (el) el.classList.add('done');
         });
       }
+    }
+
+    // 載入出場理由
+    if (data.exitReasons) {
+      exitReasons = data.exitReasons;
     }
 
     // 載入心理檢核
@@ -1641,7 +1876,21 @@ function downloadDailyRecord() {
   }).join('、') || '無';
 
   const ptsTotal = ptsLog.reduce((a, b) => a + b, 0);
-  const ptsDetail = ptsLog.length ? ptsLog.map((p, i) => `- 第${i+1}筆：${p > 0 ? '+' : ''}${p}點 (${p > 0 ? '+' : ''}${p * 10}元)`).join('\n') : '- 無';
+  const ptsDetail = ptsLog.length ? ptsLog.map((p, i) => {
+    const reason = exitReasons[i];
+    let reasonText = '';
+    if (reason) {
+      if (typeof reason === 'string') {
+        const r = EXIT_REASONS.find(x => x.value === reason);
+        reasonText = r ? ` — ${r.label}` : '';
+      } else if (reason.reason) {
+        const r = EXIT_REASONS.find(x => x.value === reason.reason);
+        reasonText = r ? ` — ${r.label}` : '';
+        if (reason.note) reasonText += `（${reason.note}）`;
+      }
+    }
+    return `- 第${i+1}筆：${p > 0 ? '+' : ''}${p}點 (${p > 0 ? '+' : ''}${p * 10}元)${reasonText}`;
+  }).join('\n') : '- 無';
 
   const md = `# 交易日誌 ${today}
 

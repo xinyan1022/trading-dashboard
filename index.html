@@ -624,6 +624,20 @@ body {
     </div>
   </div>
 
+  <!-- 停損語錄 -->
+  <div id="loss-quote" style="display:none;margin-bottom:12px;opacity:0;transition:opacity 0.5s ease;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(217,119,6,0.18);">
+    <div style="background:linear-gradient(135deg,rgba(217,119,6,0.15),rgba(217,119,6,0.05));border:2px solid var(--amber-border);border-radius:14px;padding:16px 18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="width:4px;height:36px;background:var(--amber);border-radius:2px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:10px;color:var(--amber);font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px" id="loss-quote-source"></div>
+          <div style="font-size:11px;color:var(--text3)">冷靜下來，回到計劃</div>
+        </div>
+      </div>
+      <div id="loss-quote-text" style="font-size:17px;color:var(--text);line-height:2;white-space:pre-line;padding-left:12px;border-left:1px solid var(--amber-border)"></div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title">出場紀錄</div>
 
@@ -677,20 +691,6 @@ body {
     <div class="shutdown" id="shutdown">
       <p>今日交易結束</p>
       <span>已達停損上限，關電腦，明天繼續</span>
-    </div>
-  </div>
-
-  <!-- 停損語錄 -->
-  <div id="loss-quote" style="display:none;margin-bottom:12px;opacity:0;transition:opacity 0.5s ease;border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(217,119,6,0.18);">
-    <div style="background:linear-gradient(135deg,rgba(217,119,6,0.15),rgba(217,119,6,0.05));border:2px solid var(--amber-border);border-radius:14px;padding:16px 18px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <div style="width:4px;height:36px;background:var(--amber);border-radius:2px;flex-shrink:0"></div>
-        <div>
-          <div style="font-size:10px;color:var(--amber);font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px" id="loss-quote-source"></div>
-          <div style="font-size:11px;color:var(--text3)">冷靜下來，回到計劃</div>
-        </div>
-      </div>
-      <div id="loss-quote-text" style="font-size:14px;color:var(--text);line-height:2;white-space:pre-line;padding-left:12px;border-left:1px solid var(--amber-border)"></div>
     </div>
   </div>
 
@@ -945,65 +945,8 @@ body {
     </div>
   </div>
 
-  <!-- 核心一：症狀與根源 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 症狀不是問題本身</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      停損後反向操作，是<strong style="color:var(--text)">症狀</strong>。<br>
-      核心問題是：<strong style="color:var(--text)">你不清楚自己在等什麼。</strong><br>
-      當你能明確定義每個條件，猜測就消失了。
-    </div>
-  </div>
-
-  <!-- 核心二：市場說服你，不是你說服市場 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 讓市場說服你</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      打開圖表，第一個問題是：<br>
-      <strong style="color:var(--text)">「這張圖我不喜歡什麼？」</strong><br>
-      如果做 X，我找多。如果沒有，<strong style="color:var(--text)">我等待。</strong>
-    </div>
-  </div>
-
-  <!-- 核心三：計劃表現 vs 你的表現 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 兩個指標</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      永遠追蹤兩件事：<br>
-      <strong style="color:var(--green)">① 交易計劃的表現</strong><br>
-      <strong style="color:var(--blue)">② 你自己的表現</strong><br>
-      縮小兩者之間的落差，就是你唯一要做的事。
-    </div>
-  </div>
-
-  <!-- 核心四：答案在日誌裡 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 答案在日誌裡</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      所有問題的答案都在你的交易日誌裡。<br>
-      虧損後不要去社群媒體找答案——<br>
-      <strong style="color:var(--text)">打開日誌，數據才是真相。</strong>
-    </div>
-  </div>
-
-  <!-- 核心五：機率 -->
-  <div class="card">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">ARJO — 接受機率</div>
-    <div style="font-size:13px;line-height:1.8;color:var(--text2)">
-      你不需要解釋每一個細微走勢。<br>
-      市場是機率，不是確定性。<br>
-      <strong style="color:var(--text)">接受虧損是過程的一部分，才有平靜。</strong>
-    </div>
-  </div>
-
-  <!-- 靜心語 -->
-  <div class="card" style="border-left:3px solid var(--amber);background:var(--amber-bg)">
-    <div style="font-size:13px;line-height:1.9;color:var(--text2);font-style:italic">
-      「你無法在沸騰的水中看清自己的倒影。<br>
-      同樣地，憤怒時你看不清真相。<br>
-      <strong style="color:var(--text)">當水平靜了，清晰才會到來。」</strong>
-    </div>
-  </div>
+  <!-- 語錄動態產生 -->
+  <div id="arjo-quotes-list"></div>
 
   <div class="footer">Process > Outcome · 答案在日誌裡</div>
 </div>
@@ -1542,6 +1485,10 @@ const ARJO_QUOTES = [
   { source: 'ARJO — 答案在日誌裡', text: '所有問題的答案都在你的交易日誌裡。\n虧損後不要去社群媒體找答案——\n打開日誌，數據才是真相。' },
   { source: 'ARJO — 接受機率', text: '你不需要解釋每一個細微走勢。\n市場是機率，不是確定性。\n接受虧損是過程的一部分，才有平靜。' },
   { source: 'ARJO — 平靜', text: '你無法在沸騰的水中看清自己的倒影。\n同樣地，憤怒時你看不清真相。\n當水平靜了，清晰才會到來。' },
+  { source: 'ARJO — 完美主義', text: '完美主義會扼殺你的穩定性。\n沒有穩定性，就無法持續修正錯誤。\n完美不是設計出來的，而是犯錯修正出來的。' },
+  { source: 'ARJO — 計畫 vs 執行', text: '此時出錯的，是你，不是交易系統。\n讓實際表現貼近策略模型，\n才是穩定性與紀律的根基。' },
+  { source: 'ARJO — 少而精', text: '交易頻率增加，不等於收益提升。\n少而精的決策，\n遠比多而亂的出手更具長期價值。' },
+  { source: 'ARJO — 交易的本質', text: '交易不是逃避現實的出口。\n它是一場需要資本、紀律與長期心智鍛鍊的事業。\n現在這筆停損，是學費，不是終點。' },
 ];
 
 function showLossQuote() {
@@ -2433,6 +2380,18 @@ function updateSummary() {
   }
 }
 
+// ==================== 提醒頁語錄動態產生 ====================
+function renderQuoteList() {
+  const container = document.getElementById('arjo-quotes-list');
+  if (!container) return;
+  container.innerHTML = ARJO_QUOTES.map(q => `
+    <div class="card" style="border-left:3px solid var(--amber);margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:0.5px">${q.source}</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text2);white-space:pre-line">${q.text}</div>
+    </div>
+  `).join('');
+}
+
 // ==================== 初始化 ====================
 window.onload = () => {
   // 主題
@@ -2445,6 +2404,7 @@ window.onload = () => {
   loadData();
   loadAllImgs();
   updatePsychStatus();
+  renderQuoteList();
 
   // 初始化自動增長 textarea + 即時儲存
   document.querySelectorAll('.auto-expand, .auto-save, .note-input').forEach(textarea => {

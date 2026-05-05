@@ -510,8 +510,7 @@ body {
   border-color: var(--blue);
 }
 </style>
-<base target="_blank">
-<base target="_blank">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
@@ -729,6 +728,10 @@ body {
     <div class="card-title">📦 打包下載今日紀錄</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
       <button class="btn btn-amber" onclick="downloadDailyZip()">⬇️ 下載 ZIP 壓縮檔</button>
+      <label class="btn btn-blue" style="cursor:pointer;display:inline-flex;align-items:center;">
+        📂 從 ZIP 還原
+        <input type="file" accept=".zip" style="display:none" onchange="restoreFromZip(this)">
+      </label>
     </div>
     <div style="font-size:12px;color:var(--text3);line-height:1.7">
       一鍵打包今日所有資料：<br>
@@ -736,7 +739,8 @@ body {
       • data.json（完整交易資料）<br>
       • 所有圖表截圖（Weekly / Daily / 4H / 1H / 15M）<br>
       <br>
-      檔名自動帶日期，解壓後即可歸檔到資料夾
+      檔名自動帶日期，解壓後即可歸檔到資料夾<br>
+      「從 ZIP 還原」可直接載入先前下載的 ZIP 備份
     </div>
   </div>
   </div>
@@ -1832,6 +1836,15 @@ function loadAllImgs() {
 
 // ==================== 匯出紀錄 ====================
 function downloadDailyRecord() {
+  const md = buildDailyMarkdown();
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `交易日誌_${new Date().toISOString().slice(0, 10)}.md`;
+  a.click();
+}
+
+function _downloadDailyRecord_UNUSED() {
   const today = new Date().toLocaleDateString('zh-TW');
   const total = wins + losses;
   const rate = total ? Math.round((wins / total) * 100) : 0;
@@ -1980,11 +1993,11 @@ ${doneRules}
 - Less is More
 `;
 
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `交易日誌_${new Date().toISOString().slice(0, 10)}.md`;
-  a.click();
+  const blob2 = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const a2 = document.createElement('a');
+  a2.href = URL.createObjectURL(blob2);
+  a2.download = `交易日誌_${new Date().toISOString().slice(0, 10)}.md`;
+  a2.click();
 }
 
 // ==================== 盤前清除 ====================
@@ -2018,6 +2031,285 @@ function clearPremarket() {
 
   saveData();
   updateSummary();
+}
+
+// ==================== ZIP 打包下載 ====================
+async function downloadDailyZip() {
+  saveData();
+  try {
+    if (typeof JSZip === 'undefined') {
+      alert('❌ JSZip 函式庫載入失敗，請確認網路連線後重新整理頁面');
+      return;
+    }
+
+    const zip = new JSZip();
+    const today = new Date().toISOString().slice(0, 10);
+    const folder = zip.folder(`交易紀錄_${today}`);
+
+    // 1. 加入 Markdown 日誌（複用 downloadDailyRecord 的邏輯）
+    const mdContent = buildDailyMarkdown();
+    folder.file(`交易日誌_${today}.md`, mdContent);
+
+    // 2. 加入 JSON 資料
+    const raw = localStorage.getItem('trade_full_v27');
+    const data = raw ? JSON.parse(raw) : {};
+    const images = {};
+    ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
+      const img = localStorage.getItem('chart_img_' + id);
+      if (img) images[id] = img;
+    });
+    const backup = {
+      _backup_time: new Date().toLocaleString('zh-TW'),
+      _version: 'v27',
+      data: data,
+      images: images
+    };
+    folder.file(`data_${today}.json`, JSON.stringify(backup, null, 2));
+
+    // 3. 加入圖表圖片
+    const imgNames = { 'w-img': 'Weekly', 'd-img': 'Daily', 'h4-img': '4H', 'h1-img': '1H', 'h15-img': '15M' };
+    let imgCount = 0;
+    for (const [id, label] of Object.entries(imgNames)) {
+      const b64 = localStorage.getItem('chart_img_' + id);
+      if (b64) {
+        // b64 格式: data:image/jpeg;base64,XXXX
+        const match = b64.match(/^data:([^;]+);base64,(.+)$/);
+        if (match) {
+          const ext = match[1].split('/')[1] || 'png';
+          folder.file(`圖表_${label}.${ext}`, match[2], { base64: true });
+          imgCount++;
+        }
+      }
+    }
+
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `交易紀錄_${today}.zip`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+
+    // 提示
+    const imgMsg = imgCount > 0 ? `\n• 圖表截圖：${imgCount} 張` : '\n• 無圖表截圖（尚未上傳）';
+    console.log(`✅ ZIP 下載成功：交易日誌 + data.json${imgMsg}`);
+  } catch(e) {
+    console.error(e);
+    alert('❌ ZIP 打包失敗：' + e.message);
+  }
+}
+
+// ==================== 從 ZIP 還原 ====================
+async function restoreFromZip(input) {
+  const file = input.files[0];
+  if (!file) return;
+  try {
+    if (typeof JSZip === 'undefined') {
+      alert('❌ JSZip 函式庫載入失敗，請確認網路連線後重新整理頁面');
+      input.value = '';
+      return;
+    }
+
+    const zip = await JSZip.loadAsync(file);
+
+    // 尋找 data*.json
+    let jsonFile = null;
+    zip.forEach((relativePath, zipEntry) => {
+      if (!zipEntry.dir && relativePath.match(/data.*\.json$/i)) {
+        jsonFile = zipEntry;
+      }
+    });
+
+    if (!jsonFile) {
+      alert('❌ ZIP 中找不到 data.json，請確認是否為正確的交易看板備份檔');
+      input.value = '';
+      return;
+    }
+
+    const jsonText = await jsonFile.async('string');
+    const backup = JSON.parse(jsonText);
+
+    if (!confirm(`確定要從 ZIP 還原備份？\n備份時間：${backup._backup_time || '未知'}\n版本：${backup._version || '未知'}\n\n目前所有資料將被覆蓋。`)) {
+      input.value = '';
+      return;
+    }
+
+    // 還原主要資料
+    if (backup.data) {
+      localStorage.setItem('trade_full_v27', JSON.stringify(backup.data));
+    }
+
+    // 還原 JSON 內嵌圖片（舊版備份格式）
+    if (backup.images) {
+      for (let id in backup.images) {
+        localStorage.setItem('chart_img_' + id, backup.images[id]);
+      }
+    }
+
+    // 還原 ZIP 內的圖片檔案（新版格式）
+    const imgMap = { 'Weekly': 'w-img', 'Daily': 'd-img', '4H': 'h4-img', '1H': 'h1-img', '15M': 'h15-img' };
+    const imgPromises = [];
+    zip.forEach((relativePath, zipEntry) => {
+      if (!zipEntry.dir && relativePath.match(/圖表_(Weekly|Daily|4H|1H|15M)\.(png|jpg|jpeg|webp|gif)$/i)) {
+        const m = relativePath.match(/圖表_(Weekly|Daily|4H|1H|15M)\.(png|jpg|jpeg|webp|gif)$/i);
+        if (m) {
+          const storageId = imgMap[m[1]];
+          const ext = m[2].toLowerCase();
+          const mime = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+          if (storageId) {
+            imgPromises.push(
+              zipEntry.async('base64').then(b64 => {
+                localStorage.setItem('chart_img_' + storageId, `data:${mime};base64,${b64}`);
+              })
+            );
+          }
+        }
+      }
+    });
+    await Promise.all(imgPromises);
+
+    loadData();
+    loadAllImgs();
+    updateSummary();
+    updatePsychStatus();
+    alert(`✅ 從 ZIP 還原成功！\n備份時間：${backup._backup_time || '未知'}`);
+  } catch(err) {
+    console.error(err);
+    alert('❌ ZIP 還原失敗：' + err.message + '\n請確認是否為正確的交易看板備份檔');
+  }
+  input.value = '';
+}
+
+// 供 downloadDailyZip 使用的 Markdown 建構函式
+function buildDailyMarkdown() {
+  const today = new Date().toLocaleDateString('zh-TW');
+  const bias = document.querySelector('#today-bias-group .dir-btn.long, #today-bias-group .dir-btn.short, #today-bias-group .dir-btn.none-act');
+  const biasText = bias ? bias.textContent : '未設定';
+  let wins = 0, losses = 0;
+  const ptsLog = window.ptsLog || [];
+  const exitReasons = window.exitReasons || [];
+  ptsLog.forEach(p => { if (p > 0) wins++; else losses++; });
+  const total = wins + losses;
+  const rate = total > 0 ? Math.round(wins / total * 100) : 0;
+
+  const doneRules = Array.from(document.querySelectorAll('#premarket .rule-row.done .rtext')).map(r => '- [x] ' + r.textContent).join('\n') || '- 無';
+  const entryRules = Array.from(document.querySelectorAll('#cockpit .rule-row.done .rtext')).map(r => '- [x] ' + r.textContent).join('\n') || '- 無';
+
+  const cItems = Array.from(document.querySelectorAll('input[data-level="c"]:checked')).map(el => '⚠️ ' + el.parentElement.querySelector('span').textContent).join('、') || '無';
+  const bItems = Array.from(document.querySelectorAll('input[data-level="b"]:checked')).map(el => '⚡ ' + el.parentElement.querySelector('span').textContent).join('、') || '無';
+  const aItems = Array.from(document.querySelectorAll('input[data-level="a"]:checked')).map(el => '✅ ' + el.parentElement.querySelector('span').textContent).join('、') || '無';
+
+  const ptsTotal = ptsLog.reduce((a, b) => a + b, 0);
+  const ptsDetail = ptsLog.length ? ptsLog.map((p, i) => {
+    const reason = exitReasons[i];
+    let reasonText = '';
+    if (reason) {
+      if (typeof reason === 'string') {
+        const r = (window.EXIT_REASONS || []).find(x => x.value === reason);
+        reasonText = r ? ` — ${r.label}` : '';
+      } else if (reason.reason) {
+        const r = (window.EXIT_REASONS || []).find(x => x.value === reason.reason);
+        reasonText = r ? ` — ${r.label}` : '';
+        if (reason.note) reasonText += `（${reason.note}）`;
+      }
+    }
+    return `- 第${i+1}筆：${p > 0 ? '+' : ''}${p}點 (${p > 0 ? '+' : ''}${p * 10}元)${reasonText}`;
+  }).join('\n') : '- 無';
+
+  const getFlow = id => {
+    const btn = document.querySelector(`#${id} .flow-btn.bull, #${id} .flow-btn.bear, #${id} .flow-btn.none-f`);
+    if (!btn) return '—';
+    return btn.dataset.val === 'bull' ? '多' : btn.dataset.val === 'bear' ? '空' : '中性';
+  };
+  const getArray = id => {
+    const btns = document.querySelectorAll(`#${id} .array-btn.sel-dis, #${id} .array-btn.sel-res`);
+    return Array.from(btns).map(b => b.textContent).join(', ') || '—';
+  };
+
+  return `# 交易日誌 ${today}
+
+## 📊 今日成績
+| 項目 | 數值 |
+|------|------|
+| 今日 Bias | ${biasText} |
+| 獲利次數 | ${wins} 次 |
+| 停損次數 | ${losses} 次 |
+| 勝率 | ${rate}% |
+| 累計點數 | ${ptsTotal > 0 ? '+' : ''}${ptsTotal} 點 |
+| 累計金額 | ${ptsTotal * 10 > 0 ? '+' : ''}${ptsTotal * 10} 元 |
+
+### 點數明細
+${ptsDetail}
+
+---
+
+## 📋 盤前分析
+
+### Bias 確認
+| 時間框架 | Order Flow Lag | Premium Arrays | Discount Arrays |
+|----------|---------------|----------------|-----------------|
+| Weekly | ${getFlow('wfl')} | ${getArray('w-prem')} | ${getArray('w-disc')} |
+| Daily | ${getFlow('dfl')} | ${getArray('d-prem')} | ${getArray('d-disc')} |
+| 4H | ${getFlow('h4fl')} | ${getArray('h4-prem')} | ${getArray('h4-disc')} |
+| 1H | ${getFlow('h1fl')} | ${getArray('h1-prem')} | ${getArray('h1-disc')} |
+| 15M | ${getFlow('h15fl')} | ${getArray('h15-prem')} | ${getArray('h15-disc')} |
+
+### 各時間框架備註
+
+**Weekly**
+${document.getElementById('w-note')?.value || '無'}
+
+**Daily**
+${document.getElementById('d-note')?.value || '無'}
+
+**4H**
+${document.getElementById('h4-note')?.value || '無'}
+
+**1H**
+${document.getElementById('h1-note')?.value || '無'}
+
+**15M**
+${document.getElementById('h15-note')?.value || '無'}
+
+### 執行計劃
+${document.getElementById('plan-note')?.value || '無'}
+
+---
+
+## 📍 盤中狀態
+### 等待訊號
+${document.getElementById('waiting-note')?.value || '無'}
+
+### 關鍵價位
+${document.getElementById('level-note')?.value || '無'}
+
+### 盤中觀察
+${document.getElementById('intraday-note')?.value || '無'}
+
+---
+
+## 🧠 心理狀態
+- C級（負面）：${cItems}
+- B級（警戒）：${bItems}
+- A級（良好）：${aItems}
+
+---
+
+## ✅ 進場前確認
+${entryRules}
+
+---
+
+## ✅ 盤前清單
+${doneRules}
+
+---
+
+## 📌 核心原則
+- 永遠跟隨最近的 Order Flow Lag
+- Clarity > Profit
+- Process > Outcome
+- Less is More
+`;
 }
 
 // ==================== JSON 備份 ====================

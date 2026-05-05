@@ -583,8 +583,8 @@ body {
         <div id="sum-1h" style="font-size:13px;font-weight:700;color:var(--text2)">—</div>
       </div>
     </div>
-    <div style="font-size:10px;color:var(--indigo);font-weight:700;letter-spacing:0.5px;margin-bottom:5px">📋 執行計劃</div>
-    <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word">尚未填寫執行計劃</div>
+    <div style="font-size:10px;color:var(--indigo);font-weight:700;letter-spacing:0.5px;margin-bottom:5px">📋 15M 交易計劃</div>
+    <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word">尚未填寫 15M 交易計劃</div>
   </div>
 
   <div class="grid2">
@@ -824,12 +824,12 @@ body {
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Entry Area — 15M</div>
+  <div class="card" style="border: 2px solid var(--indigo-border); background: var(--indigo-bg); box-shadow: 0 4px 18px rgba(79,70,229,0.12);">
+    <div class="card-title" style="color: var(--indigo); font-size: 14px; font-weight: 800; letter-spacing: 0.8px; margin-bottom:14px;">📋 15M 交易計劃 <span style="font-size:11px;font-weight:500;opacity:0.7">— Entry Area</span></div>
     <div class="flow-row"><span class="flow-label">15M Order Flow Lag</span><div class="flow-btns" id="h15fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h15fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h15fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h15fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h15-prem"><button class="array-btn" data-val="dis" onclick="setArray('h15-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px" placeholder="✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多&#10;❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場&#10;&#10;📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空&#10;❌ 空方失敗條件：價格收復 ___ → 不進場&#10;&#10;⏳ 今日優先執行：多方 / 空方 / 觀望"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px;border-color:var(--indigo-border);background:var(--bg2);" placeholder="✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多&#10;❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場&#10;&#10;📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空&#10;❌ 空方失敗條件：價格收復 ___ → 不進場&#10;&#10;⏳ 今日優先執行：多方 / 空方 / 觀望"></textarea>
     <div class="img-upload-area" id="h15-img-upload" onclick="document.getElementById('h15-img-input').click()">
       <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
@@ -840,10 +840,8 @@ body {
     </div>
   </div>
 
-  <div class="card" style="border: 1.5px solid var(--indigo-border); background: var(--indigo-bg);">
-    <div class="card-title" style="color: var(--indigo); font-size: 13px; letter-spacing: 0.8px;">📋 執行計劃</div>
-    <textarea class="note-input auto-save auto-expand" id="plan-note" placeholder="今日優先劇本：等 ___ 訊號，進場區域 ___，止損放 ___" style="border-color: var(--indigo-border);min-height:80px"></textarea>
-  </div>
+  <!-- plan-note 已整合至 h15-note，保留隱藏欄位供舊資料相容 -->
+  <textarea id="plan-note" style="display:none" class="auto-save"></textarea>
 
 
 
@@ -1949,11 +1947,9 @@ ${document.getElementById('h4-note')?.value || '無'}
 **1H**
 ${document.getElementById('h1-note')?.value || '無'}
 
-**15M**
+**15M 交易計劃**
 ${document.getElementById('h15-note')?.value || '無'}
 
-### 執行計劃
-${document.getElementById('plan-note')?.value || '無'}
 
 ---
 
@@ -2267,11 +2263,9 @@ ${document.getElementById('h4-note')?.value || '無'}
 **1H**
 ${document.getElementById('h1-note')?.value || '無'}
 
-**15M**
+**15M 交易計劃**
 ${document.getElementById('h15-note')?.value || '無'}
 
-### 執行計劃
-${document.getElementById('plan-note')?.value || '無'}
 
 ---
 
@@ -2405,10 +2399,10 @@ function updateSummary() {
     }
   });
 
-  const plan = document.getElementById('plan-note')?.value || '';
+  const plan = document.getElementById('h15-note')?.value || '';
   const sumPlan = document.getElementById('sum-plan');
   if (sumPlan) {
-    sumPlan.textContent = plan || '尚未填寫執行計劃';
+    sumPlan.textContent = plan || '尚未填寫 15M 交易計劃';
   }
 
   const updEl = document.getElementById('summary-updated');

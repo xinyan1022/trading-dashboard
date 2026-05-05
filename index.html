@@ -507,6 +507,7 @@ body {
 <div class="nav">
   <button class="nav-btn active" id="nav-cockpit" onclick="showPage('cockpit',this)">看板</button>
   <button class="nav-btn" id="nav-premarket" onclick="showPage('premarket',this)">盤前分析</button>
+  <button class="nav-btn" id="nav-journal" onclick="showPage('journal',this)">交易日誌</button>
   <button class="nav-btn" id="nav-reminder" onclick="showPage('reminder',this)">提醒</button>
 </div>
 
@@ -838,6 +839,80 @@ body {
   <div class="footer">盤前完成 → 前往看板交易</div>
 </div>
 
+
+<!-- 交易日誌 -->
+<div id="journal" class="page">
+  <div class="header">
+    <div class="title">交易日誌</div>
+    <div class="clock" id="clock-journal"></div>
+  </div>
+
+  <!-- 出場明細 + 理由 -->
+  <div class="card">
+    <div class="card-title">出場明細</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px">每筆交易記錄點數與出場理由</div>
+    <div id="journal-trades" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+    <div style="font-size:11px;color:var(--text3);font-style:italic">※ 理由選完後自動儲存</div>
+  </div>
+
+  <!-- 心理狀態總結 -->
+  <div class="card">
+    <div class="card-title">今日心理狀態</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <button class="journal-grade-btn" id="grade-c" onclick="setGrade('C')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.07);color:var(--red);font-weight:700;cursor:pointer;font-size:13px">C 級</button>
+      <button class="journal-grade-btn" id="grade-b" onclick="setGrade('B')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.07);color:var(--amber);font-weight:700;cursor:pointer;font-size:13px">B 級</button>
+      <button class="journal-grade-btn" id="grade-a" onclick="setGrade('A')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(34,197,94,0.3);background:rgba(34,197,94,0.07);color:var(--green);font-weight:700;cursor:pointer;font-size:13px">A 級</button>
+    </div>
+    <textarea class="note-input auto-expand" id="journal-psych" oninput="saveJournalData()" style="min-height:80px" placeholder="一句話描述今天的心理狀態...例如：開盤後急躁，第二筆停損後情緒失控，第三筆沒有按計劃執行"></textarea>
+  </div>
+
+  <!-- 計劃執行度 -->
+  <div class="card">
+    <div class="card-title">計劃執行度</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <button class="journal-exec-btn" id="exec-yes" onclick="setExec('yes')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(34,197,94,0.3);background:rgba(34,197,94,0.07);color:var(--green);font-weight:700;cursor:pointer;font-size:12px">✅ 完全照計劃</button>
+      <button class="journal-exec-btn" id="exec-partial" onclick="setExec('partial')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.07);color:var(--amber);font-weight:700;cursor:pointer;font-size:12px">⚡ 部分偏離</button>
+      <button class="journal-exec-btn" id="exec-no" onclick="setExec('no')" style="padding:10px;border-radius:10px;border:1.5px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.07);color:var(--red);font-weight:700;cursor:pointer;font-size:12px">❌ 完全未照計劃</button>
+    </div>
+    <textarea class="note-input auto-expand" id="journal-exec-note" oninput="saveJournalData()" style="min-height:80px" placeholder="哪裡偏離了計劃？為什麼？"></textarea>
+  </div>
+
+  <!-- 今日觀察 -->
+  <div class="card">
+    <div class="card-title">今日觀察</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">市場行為 & 自己的行為</div>
+    <textarea class="note-input auto-expand" id="journal-obs" oninput="saveJournalData()" style="min-height:80px" placeholder="市場今天的走勢有什麼值得記錄的？自己有什麼慣性反應？"></textarea>
+  </div>
+
+  <!-- 下次改進 -->
+  <div class="card">
+    <div class="card-title">下次改進</div>
+    <textarea class="note-input auto-expand" id="journal-improve" oninput="saveJournalData()" style="min-height:80px" placeholder="如果明天遇到一樣的情況，我會怎麼做不一樣？"></textarea>
+  </div>
+
+  <!-- 圖片上傳 -->
+  <div class="card">
+    <div class="card-title">今日交易截圖</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">可上傳今日交易的進出場截圖做對照</div>
+    <div class="img-upload-area" id="journal-img-upload" onclick="document.getElementById('journal-img-input').click()">
+      <input type="file" id="journal-img-input" accept="image/*" onchange="loadImg('journal-img',this)" onclick="event.stopPropagation()">
+      <div class="upload-hint"><span>📷</span>點擊上傳今日交易截圖</div>
+    </div>
+    <div class="img-preview" id="journal-img-preview">
+      <img id="journal-img-img" src="" alt="today chart" onclick="window.open(this.src)">
+      <button class="img-remove" onclick="removeImg('journal-img')">✕</button>
+    </div>
+  </div>
+
+  <!-- 儲存按鈕 -->
+  <div style="display:flex;gap:8px;padding:0 0 8px">
+    <button class="btn btn-green" onclick="saveJournal()" style="flex:1">儲存日誌</button>
+    <button class="btn" onclick="exportJournal()" style="flex:1;background:var(--indigo-bg);color:var(--indigo);border:1px solid var(--indigo-border)">匯出 Markdown</button>
+  </div>
+
+  <div class="footer">收盤後填寫 · 誠實比完美更重要</div>
+</div>
+
 <!-- 提醒頁 -->
 <div id="reminder" class="page">
   <div class="header"><div class="title">每日提醒</div></div>
@@ -1024,6 +1099,7 @@ function calcLevel() {
   }
   updatePsychStatus();
   loadAllImgs();
+  loadJournalData();
 }
 
 function resetMG() {
@@ -1082,6 +1158,7 @@ themeBtn.addEventListener('click', toggleTheme);
 
 // 頁面切換
 function showPage(id, el) {
+  if (id === 'journal') setTimeout(renderJournalTrades, 0);
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1376,11 +1453,153 @@ function removeImg(id) {
 }
 
 function loadAllImgs() {
-  ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
+  ['w-img','d-img','h4-img','h1-img','h15-img','journal-img'].forEach(id => {
     const data = localStorage.getItem('chart_img_' + id);
     if (data) showImg(id, data);
   });
 }
+
+
+// ── 交易日誌 ──
+let journalGrade = '';
+let journalExec = '';
+let journalReasons = {};
+
+const REASONS = [
+  '✅ 依計劃止盈',
+  '✅ 依計劃止損',
+  '⚡ 提早獲利了結',
+  '😰 恐慌提早止損',
+  '🔄 方向判斷錯誤',
+  '⏰ 時間到強制出場',
+  '📌 其他'
+];
+
+function renderJournalTrades() {
+  const container = document.getElementById('journal-trades');
+  if (!container) return;
+  if (ptsLog.length === 0) {
+    container.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:12px">今日尚無交易紀錄</div>';
+    return;
+  }
+  container.innerHTML = ptsLog.map((p, i) => {
+    const color = p > 0 ? 'var(--green)' : 'var(--red)';
+    const type = p > 0 ? '獲利' : '停損';
+    const sign = p > 0 ? '+' : '';
+    const savedReason = journalReasons[i] || '';
+    const opts = REASONS.map(r =>
+      `<option value="${r}" ${savedReason === r ? 'selected' : ''}>${r}</option>`
+    ).join('');
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg3);border-radius:10px">
+      <div style="flex:1;font-size:13px;color:${color};font-weight:600">第${i+1}筆 ${type}｜${sign}${p}點 (${sign}${p*10}元)</div>
+      <select onchange="setReason(${i},this.value)" style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:11px;padding:4px 6px;cursor:pointer;max-width:160px">
+        <option value="">選擇理由...</option>
+        ${opts}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function setReason(idx, val) {
+  journalReasons[idx] = val;
+  saveJournalData();
+}
+
+function setGrade(g) {
+  journalGrade = g;
+  ['A','B','C'].forEach(x => {
+    const btn = document.getElementById('grade-' + x.toLowerCase());
+    if (btn) btn.style.opacity = x === g ? '1' : '0.35';
+  });
+  saveJournalData();
+}
+
+function setExec(e) {
+  journalExec = e;
+  ['yes','partial','no'].forEach(x => {
+    const btn = document.getElementById('exec-' + x);
+    if (btn) btn.style.opacity = x === e ? '1' : '0.35';
+  });
+  saveJournalData();
+}
+
+function saveJournalData() {
+  const data = {
+    grade: journalGrade,
+    exec: journalExec,
+    reasons: journalReasons,
+    psych: document.getElementById('journal-psych')?.value || '',
+    execNote: document.getElementById('journal-exec-note')?.value || '',
+    obs: document.getElementById('journal-obs')?.value || '',
+    improve: document.getElementById('journal-improve')?.value || '',
+  };
+  try { localStorage.setItem('journal_data', JSON.stringify(data)); } catch(e) {}
+}
+
+function saveJournal() {
+  saveJournalData();
+  alert('日誌已儲存 ✓');
+}
+
+function loadJournalData() {
+  try {
+    const d = localStorage.getItem('journal_data');
+    if (!d) return;
+    const data = JSON.parse(d);
+    journalGrade = data.grade || '';
+    journalExec = data.exec || '';
+    journalReasons = data.reasons || {};
+    if (journalGrade) setGrade(journalGrade);
+    if (journalExec) setExec(journalExec);
+    const fields = ['psych','execNote','obs','improve'];
+    const ids = ['journal-psych','journal-exec-note','journal-obs','journal-improve'];
+    fields.forEach((f, i) => {
+      const el = document.getElementById(ids[i]);
+      if (el && data[f]) el.value = data[f];
+    });
+  } catch(e) {}
+}
+
+function exportJournal() {
+  const today = new Date().toLocaleDateString('zh-TW');
+  const tradesText = ptsLog.map((p, i) => {
+    const sign = p > 0 ? '+' : '';
+    const type = p > 0 ? '獲利' : '停損';
+    const reason = journalReasons[i] || '未填寫';
+    return `- 第${i+1}筆 ${type}｜${sign}${p}點 (${sign}${p*10}元)｜理由：${reason}`;
+  }).join('\n') || '無交易紀錄';
+
+  const total = ptsLog.reduce((a,b) => a+b, 0);
+  const md = `# 交易日誌 ${today}
+
+## 出場明細
+${tradesText}
+
+累計：${total > 0 ? '+' : ''}${total}點 (${total*10}元)
+
+## 心理狀態
+等級：${journalGrade || '未填寫'}
+${document.getElementById('journal-psych')?.value || ''}
+
+## 計劃執行度
+${journalExec === 'yes' ? '✅ 完全照計劃' : journalExec === 'partial' ? '⚡ 部分偏離' : journalExec === 'no' ? '❌ 完全未照計劃' : '未填寫'}
+${document.getElementById('journal-exec-note')?.value || ''}
+
+## 今日觀察
+${document.getElementById('journal-obs')?.value || ''}
+
+## 下次改進
+${document.getElementById('journal-improve')?.value || ''}
+`;
+  const blob = new Blob([md], {type:'text/markdown'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `交易日誌_${today.replace(/\//g,'-')}.md`;
+  a.click();
+}
+
+// 切換到日誌頁時重新渲染出場明細
+
 
 function downloadDailyRecord() {
   const today = new Date().toLocaleDateString('zh-TW');
@@ -1650,6 +1869,7 @@ window.onload = () => {
   loadData();
   updatePsychStatus();
   loadAllImgs();
+  loadJournalData();
 
   // 初始化自動增長 textarea
   document.querySelectorAll('.auto-expand').forEach(textarea => {

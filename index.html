@@ -364,10 +364,15 @@ body {
   display: none;
 }
 .img-preview img {
-  width: 100%;
+  width: 1280px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1280 / 768;
+  object-fit: contain;
   border-radius: 8px;
   display: block;
   cursor: pointer;
+  margin: 0 auto;
 }
 .img-preview .img-remove {
   position: absolute;
@@ -509,10 +514,102 @@ body {
 .exit-reason-row input:focus {
   border-color: var(--blue);
 }
+
+/* ===== Lightbox ===== */
+#lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox-overlay.open { display: flex; }
+#lightbox-overlay img {
+  max-width: 95vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  cursor: default;
+  object-fit: contain;
+}
+#lightbox-close {
+  position: fixed;
+  top: 18px; right: 22px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+#lightbox-close:hover { background: rgba(255,255,255,0.3); }
+
+/* ===== 版面寬度控制 ===== */
+.width-control-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg2);
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.width-label { font-size: 12px; color: var(--text3); white-space: nowrap; }
+.width-preset-btns { display: flex; gap: 5px; }
+.width-preset-btn {
+  padding: 4px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.width-preset-btn.active,
+.width-preset-btn:hover {
+  background: var(--blue-bg);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.width-slider-wrap { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 160px; }
+.width-slider-wrap input[type=range] {
+  flex: 1;
+  accent-color: var(--blue);
+  height: 4px;
+  cursor: pointer;
+}
+.width-slider-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  min-width: 42px;
+  text-align: right;
+}
+
+/* wrapper for content width */
+.content-width-wrap {
+  max-width: var(--content-width, 100%);
+  margin: 0 auto;
+  transition: max-width 0.2s ease;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
+
+<!-- Lightbox overlay -->
+<div id="lightbox-overlay" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()" title="關閉 (Esc)">✕</button>
+  <img id="lightbox-img" src="" alt="圖表放大" onclick="event.stopPropagation()">
+</div>
 
 <div class="top-nav">
   <div class="logo">交易看板</div>
@@ -526,6 +623,23 @@ body {
   <button class="nav-btn" id="nav-review" onclick="showPage('review',this)">盤後複盤</button>
 </div>
 
+<!-- 版面寬度控制列 -->
+<div class="width-control-bar">
+  <span class="width-label">版面寬度：</span>
+  <div class="width-preset-btns">
+    <button class="width-preset-btn" onclick="setWidth(760)">窄 760</button>
+    <button class="width-preset-btn" onclick="setWidth(960)">中 960</button>
+    <button class="width-preset-btn" onclick="setWidth(1280)">寬 1280</button>
+    <button class="width-preset-btn active" onclick="setWidth(null)">全寬</button>
+  </div>
+  <div class="width-slider-wrap">
+    <span class="width-label">自訂：</span>
+    <input type="range" id="width-slider" min="560" max="1600" step="20" value="1600" oninput="onWidthSlider(this.value)">
+    <span class="width-slider-val" id="width-slider-val">全寬</span>
+  </div>
+</div>
+
+<div class="content-width-wrap" id="content-wrap">
 <!-- 看板頁 -->
 <div id="cockpit" class="page active">
   <div class="header">
@@ -574,7 +688,7 @@ body {
     </div>
     <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">尚未填寫 15M 交易計劃</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
-      <img id="sum-15m-img" src="" style="width:100%;border-radius:8px;display:block;cursor:pointer" onclick="window.open(this.src,'_blank')" title="點擊放大">
+      <img id="sum-15m-img" src="" style="width:100%;border-radius:8px;display:block;cursor:pointer" onclick="openLightbox(this.src)" title="點擊放大">
     </div>
   </div>
 
@@ -870,6 +984,8 @@ body {
   <div class="footer">複盤不是懲罰，是進步的燃料</div>
 </div>
 
+</div><!-- /content-width-wrap -->
+
 <script>
 // ==================== 全域狀態 ====================
 let losses = 0;
@@ -971,7 +1087,7 @@ function renderReviewPage() {
         <input type="file" id="review-img-input-${i}" accept="image/*" style="display:none" onchange="loadReviewImg(${i},this)">
       </div>
       <div id="review-img-preview-${i}" style="position:relative;display:${rd.imgSrc?'block':'none'}">
-        <img id="review-img-img-${i}" src="${rd.imgSrc||''}" style="width:100%;border-radius:10px;display:block">
+        <img id="review-img-img-${i}" src="${rd.imgSrc||''}" style="width:100%;border-radius:10px;display:block;cursor:zoom-in" onclick="openLightbox(this.src)">
         <button onclick="removeReviewImg(${i})" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px">✕</button>
       </div>
     `;
@@ -1021,7 +1137,11 @@ function loadReviewImg(tradeIdx, input) {
     const img = document.getElementById(`review-img-img-${tradeIdx}`);
     if (upload) upload.style.display = 'none';
     if (preview) preview.style.display = 'block';
-    if (img) img.src = e.target.result;
+    if (img) {
+      img.src = e.target.result;
+      img.onclick = function() { openLightbox(this.src); };
+      img.style.cursor = 'zoom-in';
+    }
     saveData();
   };
   reader.readAsDataURL(file);
@@ -1833,6 +1953,8 @@ function showImg(id, data) {
   const upload = document.getElementById(id + '-upload');
   if (preview && img && data) {
     img.src = data;
+    img.onclick = function() { openLightbox(this.src); };
+    img.style.cursor = 'zoom-in';
     preview.style.display = 'block';
     if (upload) upload.style.display = 'none';
   }
@@ -2437,6 +2559,66 @@ function renderQuoteList() {
   `).join('');
 }
 
+// ==================== Lightbox ====================
+function openLightbox(src) {
+  const overlay = document.getElementById('lightbox-overlay');
+  const img = document.getElementById('lightbox-img');
+  if (!overlay || !img) return;
+  img.src = src;
+  overlay.classList.add('open');
+}
+function closeLightbox() {
+  const overlay = document.getElementById('lightbox-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// ==================== 版面寬度控制 ====================
+function setWidth(px) {
+  const wrap = document.getElementById('content-wrap');
+  const slider = document.getElementById('width-slider');
+  const valLabel = document.getElementById('width-slider-val');
+  const btns = document.querySelectorAll('.width-preset-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (!px) {
+    wrap.style.maxWidth = '';
+    if (slider) { slider.value = 1600; }
+    if (valLabel) valLabel.textContent = '全寬';
+    btns[3]?.classList.add('active');
+    localStorage.setItem('layout_width', '');
+  } else {
+    wrap.style.maxWidth = px + 'px';
+    if (slider) slider.value = px;
+    if (valLabel) valLabel.textContent = px + 'px';
+    localStorage.setItem('layout_width', px);
+    // highlight matching preset btn
+    const map = {760:0, 960:1, 1280:2};
+    if (map[px] !== undefined) btns[map[px]]?.classList.add('active');
+  }
+}
+function onWidthSlider(val) {
+  val = parseInt(val);
+  const wrap = document.getElementById('content-wrap');
+  const valLabel = document.getElementById('width-slider-val');
+  const btns = document.querySelectorAll('.width-preset-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (val >= 1580) {
+    wrap.style.maxWidth = '';
+    if (valLabel) valLabel.textContent = '全寬';
+    localStorage.setItem('layout_width', '');
+  } else {
+    wrap.style.maxWidth = val + 'px';
+    if (valLabel) valLabel.textContent = val + 'px';
+    localStorage.setItem('layout_width', val);
+    const map = {760:0, 960:1, 1280:2};
+    if (map[val] !== undefined) btns[map[val]]?.classList.add('active');
+  }
+}
+function restoreWidth() {
+  const saved = localStorage.getItem('layout_width');
+  if (saved) setWidth(parseInt(saved));
+}
+
 // ==================== 初始化 ====================
 window.onload = () => {
   // 主題
@@ -2444,6 +2626,9 @@ window.onload = () => {
     document.documentElement.setAttribute('data-theme', 'dark');
     themeBtn.textContent = '切換淺色';
   }
+
+  // 還原版面寬度
+  restoreWidth();
 
   // 載入資料
   loadData();

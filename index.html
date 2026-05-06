@@ -447,11 +447,12 @@ body {
 .flow-label, .array-label { font-size: 13px; color: var(--text2); min-width: 110px; }
 .flow-btns, .array-btns { display: flex; gap: 4px; }
 .flow-btn, .array-btn {
-  padding: 4px 10px;
+  padding: 7px 12px;
   border-radius: 8px;
   border: 1px solid var(--border2);
   background: var(--bg3);
-  font-size: 12px;
+  font-size: 14px;
+  height: 38px;
   cursor: pointer;
   color: var(--text2);
 }
@@ -533,10 +534,32 @@ body {
     <div class="clock" id="clock"></div>
   </div>
 
-  <div class="top-bar">
-    <div class="stat"><div class="stat-label">今日停損</div><div class="stat-val c-green" id="loss-display">0 / 4</div></div>
-    <div class="stat"><div class="stat-label">冷卻狀態</div><div class="stat-val c-green" id="timer-status">待機</div></div>
+  <!-- 頂部統計：第一列 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+    <!-- 今日停損 + 進度條 -->
+    <div class="stat" style="text-align:left;padding:12px 14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="stat-label" style="margin-bottom:0">今日停損</div>
+        <div class="stat-val c-green" id="loss-display" style="font-size:18px">0 / 4</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <div class="ldot" id="ld1" style="flex:1;height:6px;border-radius:3px;background:var(--bg3);border:1px solid var(--border);transition:background 0.2s"></div>
+        <div class="ldot" id="ld2" style="flex:1;height:6px;border-radius:3px;background:var(--bg3);border:1px solid var(--border);transition:background 0.2s"></div>
+        <div class="ldot" id="ld3" style="flex:1;height:6px;border-radius:3px;background:var(--bg3);border:1px solid var(--border);transition:background 0.2s"></div>
+        <div class="ldot" id="ld4" style="flex:1;height:6px;border-radius:3px;background:var(--bg3);border:1px solid var(--border);transition:background 0.2s"></div>
+      </div>
+    </div>
+    <!-- 今日狀態 -->
     <div class="stat"><div class="stat-label">今日狀態</div><div class="stat-val c-green" id="today-status">可交易</div></div>
+  </div>
+  <!-- 頂部統計：第二列 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+    <!-- 冷卻計時 -->
+    <div class="stat"><div class="stat-label">冷卻狀態</div><div class="stat-val c-green" id="timer-status">待機</div></div>
+    <!-- 累計點數 -->
+    <div class="stat"><div class="stat-label">累計點數</div><div class="stat-val" id="top-total-pts" style="font-size:18px">0</div></div>
+    <!-- 本日 R 值 -->
+    <div class="stat"><div class="stat-label">本日 R 值</div><div class="stat-val c-green" id="top-r-value" style="font-size:18px">0.0</div></div>
   </div>
 
   <!-- 盤前摘要 -->
@@ -578,22 +601,24 @@ body {
     </div>
   </div>
 
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">進場前確認 <span style="font-size:11px;color:var(--text3);font-weight:400">（依序勾選，缺一不可）</span></div>
-      <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊 — 風控優先</div></div></div>
-      <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
-      <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
-      <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
+  <!-- 進場前確認 + 絕對禁止（合併全寬卡片） -->
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div class="card-title">進場前確認 <span style="font-size:11px;color:var(--text3);font-weight:400">（依序勾選，缺一不可）</span></div>
+        <div class="rule-row" data-id="e4" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">停損＋停利掛單設好</div><div class="rsub">不手動點擊 — 風控優先</div></div></div>
+        <div class="rule-row" data-id="e1" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">HTF與LTF方向一致</div><div class="rsub">Order Flow Lag 確認</div></div></div>
+        <div class="rule-row" data-id="e2" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">2CR、ST 確認</div><div class="rsub">清晰的拒絕、反轉訊號</div></div></div>
+        <div class="rule-row" data-id="e3" onclick="toggleRule(this)"><div class="rdot"><svg width="8" height="6" viewBox="0 0 8 6"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" fill="none"/></svg></div><div><div class="rtext">PD Array 未使用過</div><div class="rsub">只能使用一次</div></div></div>
+      </div>
+      <div>
+        <div class="card-title">絕對禁止</div>
+        <div class="alert-row"><div class="adot adot-red"></div><div class="atext">停損後不反向——停損只代表碰到停損點，不代表 Order Flow 反轉</div></div>
+        <div class="alert-row"><div class="adot adot-red"></div><div class="atext">盤整不進場——等待 Area of Opportunity，等待就是我的倉位</div></div>
+        <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">不在盤中改變今天的 Bias——Bias 在盤前決定</div></div>
+        <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">今日最多 4 筆——Less is More，螢幕時間越少越好</div></div>
+      </div>
     </div>
-
-    <div class="card">
-    <div class="card-title">絕對禁止</div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">停損後不反向——停損只代表碰到停損點，不代表 Order Flow 反轉</div></div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">盤整不進場——等待 Area of Opportunity，等待就是我的倉位</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">不在盤中改變今天的 Bias——Bias 在盤前決定</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">今日最多 4 筆——Less is More，螢幕時間越少越好</div></div>
-  </div>
   </div>
 
   <!-- 停損語錄 -->
@@ -610,11 +635,39 @@ body {
     </div>
   </div>
 
+  <!-- 出場紀錄：行動卡 -->
   <div class="card">
-    <div class="card-title">出場紀錄</div>
+    <div class="card-title">出場紀錄 — 輸入</div>
 
+    <!-- 單一輸入 -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <input type="number" id="pts-input"
+        placeholder="輸入點數（正=獲利  負=停損）"
+        style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;outline:none"
+        onkeydown="if(event.key==='Enter')recordTrade()">
+      <button class="btn btn-blue" onclick="recordTrade()" style="white-space:nowrap">確認出場</button>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入點數後按確認出場或 Enter 即記錄，停損自動啟動 15 分鐘冷卻。</div>
+
+    <!-- 停損進度 -->
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px" id="loss-label">今日停損：0 次　剩餘機會：4 次</div>
+
+    <!-- 出場理由 -->
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:10px">出場理由</div>
+    <div id="exit-reasons" style="margin-bottom:12px"></div>
+
+    <!-- 達上限提示 -->
+    <div class="shutdown" id="shutdown">
+      <p>今日交易結束</p>
+      <span>已達停損上限，關電腦，明天繼續</span>
+    </div>
+  </div>
+
+  <!-- 出場紀錄：統計卡 -->
+  <div class="card">
+    <div class="card-title">出場紀錄 — 統計</div>
     <!-- 統計數字 -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px">
       <div style="text-align:center;background:var(--bg3);border-radius:10px;padding:10px">
         <div style="font-size:11px;color:var(--text2);margin-bottom:3px">獲利</div>
         <div style="font-size:21px;font-weight:700;color:var(--green)" id="wins-display">0</div>
@@ -632,41 +685,9 @@ body {
         <div style="font-size:21px;font-weight:700;font-variant-numeric:tabular-nums" id="total-amt">0</div>
       </div>
     </div>
-
-    <!-- 停損進度條 -->
-    <div style="font-size:12px;color:var(--text2);margin-bottom:6px" id="loss-label">今日停損：0 次　剩餘機會：4 次</div>
-    <div class="loss-track" style="margin-bottom:14px">
-      <div class="ldot" id="ld1"></div>
-      <div class="ldot" id="ld2"></div>
-      <div class="ldot" id="ld3"></div>
-      <div class="ldot" id="ld4"></div>
-    </div>
-
-    <!-- 單一輸入 -->
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-      <input type="number" id="pts-input"
-        placeholder="輸入點數（正=獲利  負=停損）"
-        style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;outline:none"
-        onkeydown="if(event.key==='Enter')recordTrade()">
-      <button class="btn btn-blue" onclick="recordTrade()" style="white-space:nowrap">確認出場</button>
-    </div>
-    <div style="font-size:12px;color:var(--text3);margin-bottom:12px">輸入點數後按確認出場或 Enter 即記錄，停損自動啟動 15 分鐘冷卻。</div>
-
-    <!-- 出場理由 -->
-    <div style="font-size:12px;color:var(--text2);margin-bottom:6px;margin-top:10px">出場理由</div>
-    <div id="exit-reasons" style="margin-bottom:12px"></div>
-
-    <!-- 明細 -->
-    <div id="pts-log" style="font-size:13px;color:var(--text2);max-height:130px;overflow-y:auto;line-height:2.2"></div>
-
-    <!-- 達上限提示 -->
-    <div class="shutdown" id="shutdown">
-      <p>今日交易結束</p>
-      <span>已達停損上限，關電腦，明天繼續</span>
-    </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:12px">
     <div class="card" style="margin-bottom:0">
       <div class="card-title">交易統計圖表</div>
       <div class="chart-box">
@@ -688,28 +709,29 @@ body {
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">停損冷卻計時器</div>
-      <div class="timer-active" id="timer-active">
-        <div class="timer-val" id="timer-val">30:00</div>
-        <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <!-- 計時器 -->
+      <div class="card" style="margin-bottom:0;flex:1">
+        <div class="card-title">停損冷卻計時器</div>
+        <div class="timer-active" id="timer-active">
+          <div class="timer-val" id="timer-val">30:00</div>
+          <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
+        </div>
+        <button class="btn btn-amber" id="btn-start" onclick="startTimer()" style="width:100%">啟動 15 分鐘冷卻</button>
+        <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px;width:100%" id="btn-cancel">取消計時</button>
       </div>
-      <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 15 分鐘冷卻</button>
-      <button class="btn btn-muted" onclick="cancelTimer()" style="display:none;margin-top:8px" id="btn-cancel">取消計時</button>
-      <div class="timer-hint">停損後自動啟動，關閉所有圖表，去休息。時間到前不回來看盤。</div>
-    </div>
-
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">📦 今日紀錄</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn btn-amber" onclick="downloadDailyZip()" style="width:100%">⬇️ 下載 ZIP</button>
-        <label class="btn btn-blue" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:100%">
-          📂 從 ZIP 還原
-          <input type="file" accept=".zip" style="display:none" onchange="restoreFromZip(this)">
-        </label>
-        <button class="btn btn-muted" onclick="resetCockpit()" style="width:100%">🗑 清除今日看板</button>
+      <!-- 今日紀錄 -->
+      <div class="card" style="margin-bottom:0;flex:1">
+        <div class="card-title">📦 今日紀錄</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-amber" onclick="downloadDailyZip()" style="width:100%">⬇️ 下載 ZIP</button>
+          <label class="btn btn-blue" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:100%">
+            📂 從 ZIP 還原
+            <input type="file" accept=".zip" style="display:none" onchange="restoreFromZip(this)">
+          </label>
+          <button class="btn btn-muted" onclick="resetCockpit()" style="width:100%">🗑 清除看板</button>
+        </div>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">ZIP 包含日誌、資料、圖表截圖</div>
     </div>
   </div>
 
@@ -724,12 +746,29 @@ body {
   </div>
 
   <div class="save-bar">
+    <!-- 盤前完成度進度條 -->
+    <div style="width:100%;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:12px;font-weight:600;color:var(--text2)" id="premarket-progress-label">0 / 8 項已填寫</span>
+        <span style="font-size:11px;color:var(--text3)" id="premarket-progress-pct">0%</span>
+      </div>
+      <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+        <div id="premarket-progress-bar" style="height:100%;width:0%;background:var(--text3);border-radius:3px;transition:width 0.4s ease,background 0.4s ease"></div>
+      </div>
+    </div>
     <button class="btn btn-green" onclick="savePlan()">儲存</button>
-    <button class="btn btn-muted" onclick="clearPremarket()">清除盤前</button>
+    <button class="btn btn-muted" id="btn-clear-premarket" onmousedown="startClearHold()" onmouseup="cancelClearHold()" onmouseleave="cancelClearHold()" ontouchstart="startClearHold()" ontouchend="cancelClearHold()" style="position:relative;overflow:hidden">
+      清除盤前
+      <div id="clear-hold-progress" style="position:absolute;bottom:0;left:0;height:3px;width:0%;background:var(--red);transition:none;border-radius:0 0 8px 8px"></div>
+    </button>
   </div>
 
   <div class="card">
-    <div class="card-title">Bias 趨勢方向</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0" onclick="toggleSection('weekly-body',this)">
+      <span>Bias 趨勢方向 — Weekly</span>
+      <span id="weekly-toggle" style="font-size:14px;color:var(--text3);transition:transform 0.2s">▲</span>
+    </div>
+    <div id="weekly-body" style="margin-top:12px">
     <div class="flow-row"><span class="flow-label">Weekly Order Flow Lag</span><div class="flow-btns" id="wfl"><button class="flow-btn" data-val="bull" onclick="setFlow('wfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('wfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('wfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
@@ -742,10 +781,15 @@ body {
       <img id="w-img-img" src="" alt="Weekly chart" >
       <button class="img-remove" onclick="removeImg('w-img')">✕</button>
     </div>
+    </div><!-- end weekly-body -->
   </div>
 
   <div class="card">
-    <div class="card-title">Narrative Area — Daily</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0" onclick="toggleSection('daily-body',this)">
+      <span>Narrative Area — Daily</span>
+      <span id="daily-toggle" style="font-size:14px;color:var(--text3);transition:transform 0.2s">▲</span>
+    </div>
+    <div id="daily-body" style="margin-top:12px">
     <div class="flow-row"><span class="flow-label">Daily Order Flow Lag</span><div class="flow-btns" id="dfl"><button class="flow-btn" data-val="bull" onclick="setFlow('dfl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('dfl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('dfl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
@@ -758,10 +802,15 @@ body {
       <img id="d-img-img" src="" alt="Daily chart" >
       <button class="img-remove" onclick="removeImg('d-img')">✕</button>
     </div>
+    </div><!-- end daily-body -->
   </div>
 
   <div class="card">
-    <div class="card-title">Context Area — 4H</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0" onclick="toggleSection('h4-body',this)">
+      <span>Context Area — 4H</span>
+      <span id="h4-toggle" style="font-size:14px;color:var(--text3);transition:transform 0.2s">▲</span>
+    </div>
+    <div id="h4-body" style="margin-top:12px">
     <div class="flow-row"><span class="flow-label">4H Order Flow Lag</span><div class="flow-btns" id="h4fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h4fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h4fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h4fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
@@ -774,10 +823,15 @@ body {
       <img id="h4-img-img" src="" alt="4H chart" >
       <button class="img-remove" onclick="removeImg('h4-img')">✕</button>
     </div>
+    </div><!-- end h4-body -->
   </div>
 
   <div class="card">
-    <div class="card-title">Context Area — 1H</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0" onclick="toggleSection('h1-body',this)">
+      <span>Context Area — 1H</span>
+      <span id="h1-toggle" style="font-size:14px;color:var(--text3);transition:transform 0.2s">▲</span>
+    </div>
+    <div id="h1-body" style="margin-top:12px">
     <div class="flow-row"><span class="flow-label">1H Order Flow Lag</span><div class="flow-btns" id="h1fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h1fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h1fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h1fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
@@ -790,6 +844,7 @@ body {
       <img id="h1-img-img" src="" alt="1H chart" >
       <button class="img-remove" onclick="removeImg('h1-img')">✕</button>
     </div>
+    </div><!-- end h1-body -->
   </div>
 
   <div class="card" style="border: 2px solid var(--indigo-border); background: var(--indigo-bg); box-shadow: 0 4px 18px rgba(79,70,229,0.12);">
@@ -819,16 +874,6 @@ body {
 <div id="reminder" class="page">
   <div class="header"><div class="title">每日提醒</div></div>
 
-  <!-- 個人宣言 -->
-  <div class="card" style="border-left:3px solid var(--blue);background:var(--blue-bg)">
-    <div style="font-size:13px;line-height:1.9;color:var(--text)">
-      我絕對不要再成為那個 <strong>4月29日的自己</strong>——<br>
-      看對方向，卻在盤整裡反覆進場，停損後開始做反向。<br><br>
-      <strong>5月1日的我才是真實的能力。</strong><br>
-      方向清晰。等待耐心。全程沒有干預。
-    </div>
-  </div>
-
   <!-- 語錄動態產生 -->
   <div id="arjo-quotes-list"></div>
 
@@ -841,6 +886,26 @@ body {
     <div class="title">盤後複盤</div>
     <div class="clock" id="review-date"></div>
   </div>
+
+  <!-- 執行評分快速圖表 -->
+  <div id="review-score-section" style="display:none">
+    <div class="card" style="border-left:3px solid var(--indigo);background:var(--indigo-bg)">
+      <div class="card-title" style="color:var(--indigo)">🎯 執行評分</div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="text-align:center;flex-shrink:0">
+          <div style="font-size:38px;font-weight:800" id="exec-score-num">0</div>
+          <div style="font-size:11px;color:var(--text3)">分（滿 <span id="exec-score-max">0</span> 分）</div>
+        </div>
+        <div style="flex:1">
+          <div style="height:12px;background:var(--bg3);border-radius:6px;overflow:hidden;margin-bottom:6px">
+            <div id="exec-score-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:6px;transition:width 0.6s ease"></div>
+          </div>
+          <div style="font-size:12px;color:var(--text2)" id="exec-score-label">尚無資料</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- 無虧損提示 -->
   <div id="review-no-loss" style="display:none;text-align:center;padding:48px 20px">
@@ -879,6 +944,111 @@ let timerSec = 900;
 let timerInterval = null;
 let timerRunning = false;
 const MAX_LOSS = 4;
+
+// ==================== 收合 Toggle ====================
+function toggleSection(bodyId, titleEl) {
+  const body = document.getElementById(bodyId);
+  const arrow = titleEl.querySelector('span:last-child');
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+// ==================== 盤前完成度進度條 ====================
+function updatePremarketProgress() {
+  const checks = [
+    () => !!document.querySelector('#wfl .flow-btn.bull,#wfl .flow-btn.bear,#wfl .flow-btn.none-f'),
+    () => !!document.querySelector('#dfl .flow-btn.bull,#dfl .flow-btn.bear,#dfl .flow-btn.none-f'),
+    () => !!document.querySelector('#h4fl .flow-btn.bull,#h4fl .flow-btn.bear,#h4fl .flow-btn.none-f'),
+    () => !!document.querySelector('#h1fl .flow-btn.bull,#h1fl .flow-btn.bear,#h1fl .flow-btn.none-f'),
+    () => (document.getElementById('w-note')?.value || '').trim().length > 0,
+    () => (document.getElementById('d-note')?.value || '').trim().length > 0,
+    () => (document.getElementById('h15-note')?.value || '').trim().length > 0,
+    () => !!document.querySelector('#h15fl .flow-btn.bull,#h15fl .flow-btn.bear,#h15fl .flow-btn.none-f'),
+  ];
+  const done = checks.filter(fn => fn()).length;
+  const total = checks.length;
+  const pct = Math.round(done / total * 100);
+  const label = document.getElementById('premarket-progress-label');
+  const pctEl = document.getElementById('premarket-progress-pct');
+  const bar = document.getElementById('premarket-progress-bar');
+  if (label) label.textContent = `${done} / ${total} 項已填寫`;
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (bar) {
+    bar.style.width = pct + '%';
+    bar.style.background = pct >= 100 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--text3)';
+  }
+}
+
+// ==================== 清除盤前長按確認 ====================
+let clearHoldTimer = null;
+let clearHoldInterval = null;
+function startClearHold() {
+  const bar = document.getElementById('clear-hold-progress');
+  if (bar) { bar.style.transition = 'none'; bar.style.width = '0%'; }
+  let elapsed = 0;
+  clearHoldInterval = setInterval(() => {
+    elapsed += 50;
+    const pct = Math.min(elapsed / 2000 * 100, 100);
+    if (bar) bar.style.width = pct + '%';
+    if (elapsed >= 2000) {
+      cancelClearHold();
+      clearPremarket();
+    }
+  }, 50);
+}
+function cancelClearHold() {
+  clearInterval(clearHoldInterval);
+  const bar = document.getElementById('clear-hold-progress');
+  if (bar) { bar.style.width = '0%'; }
+}
+
+// ==================== 本日 R 值 ====================
+function updateRValue() {
+  const totalPts = ptsLog.reduce((a, b) => a + b, 0);
+  const stopPts = 20; // 每口停損點數（預設）
+  const r = stopPts > 0 ? (totalPts / stopPts) : 0;
+  const el = document.getElementById('top-r-value');
+  const pts = document.getElementById('top-total-pts');
+  if (el) {
+    el.textContent = (r >= 0 ? '+' : '') + r.toFixed(1) + 'R';
+    el.className = 'stat-val ' + (r > 0 ? 'c-green' : r < 0 ? 'c-red' : 'c-green');
+  }
+  if (pts) {
+    const total = ptsLog.reduce((a, b) => a + b, 0);
+    pts.textContent = (total > 0 ? '+' : '') + total;
+    pts.style.color = total > 0 ? 'var(--green)' : total < 0 ? 'var(--red)' : 'var(--text)';
+  }
+}
+
+// ==================== 執行評分圖表 ====================
+function updateExecScore() {
+  const section = document.getElementById('review-score-section');
+  const lossIndices = ptsLog.map((v, i) => ({ v, i })).filter(x => x.v < 0);
+  if (lossIndices.length === 0 || !section) { if (section) section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  let totalScore = 0;
+  const maxScore = lossIndices.length * 2;
+  lossIndices.forEach(({ i }) => {
+    const rd = reviewData[i] || {};
+    if (rd.exec === 'yes') totalScore += 2;
+    else if (rd.exec === 'partial') totalScore += 1;
+  });
+  const pct = maxScore > 0 ? Math.round(totalScore / maxScore * 100) : 0;
+  const numEl = document.getElementById('exec-score-num');
+  const maxEl = document.getElementById('exec-score-max');
+  const barEl = document.getElementById('exec-score-bar');
+  const lblEl = document.getElementById('exec-score-label');
+  if (numEl) numEl.textContent = totalScore;
+  if (maxEl) maxEl.textContent = maxScore;
+  if (barEl) barEl.style.width = pct + '%';
+  if (lblEl) {
+    if (pct >= 80) lblEl.textContent = '🟢 執行優秀，完全照計劃操作';
+    else if (pct >= 50) lblEl.textContent = '🟡 部分照計劃，仍有進步空間';
+    else lblEl.textContent = '🔴 多次未照計劃，需要深入複盤';
+  }
+}
 
 // ==================== 心理狀態檢核 ====================
 
@@ -977,6 +1147,9 @@ function renderReviewPage() {
     `;
     list.appendChild(card);
   });
+
+  // 更新執行評分
+  updateExecScore();
 }
 
 function setReviewExec(tradeIdx, val, btn) {
@@ -1127,6 +1300,7 @@ function setFlow(groupId, val, btn) {
   if (val === 'bear') btn.classList.add('bear');
   if (val === 'none') btn.classList.add('none-f');
   saveData();
+  updatePremarketProgress();
 }
 
 function setArray(groupId, val, btn) {
@@ -1479,23 +1653,14 @@ function updateAllUI() {
     amtEl.style.color = amt > 0 ? 'var(--green)' : amt < 0 ? 'var(--red)' : 'var(--text)';
   }
 
-  // 明細
-  const log = document.getElementById('pts-log');
-  if (log) {
-    log.innerHTML = ptsLog.map((p, i) => {
-      const color = p > 0 ? 'var(--green)' : 'var(--red)';
-      const type = p > 0 ? '獲利' : '停損';
-      const sign = p > 0 ? '+' : '';
-      return `<span style="color:${color};display:block">第${i+1}筆 ${type}｜${sign}${p}點 (${sign}${p*10}元)</span>`;
-    }).join('');
-    log.scrollTop = log.scrollHeight;
-  }
-
-  // 出場理由
+  // 出場理由（pts-log 已移除，改由出場理由區塊顯示）
   renderExitReasons();
 
   // 圖表
   updateChart();
+
+  // R 值
+  updateRValue();
 }
 
 // ==================== 看板重置 ====================
@@ -2460,6 +2625,7 @@ window.onload = () => {
     textarea.addEventListener('input', function() {
       resize(this);
       saveData();
+      updatePremarketProgress();
     });
 
     textarea.addEventListener('blur', function() {
@@ -2468,6 +2634,13 @@ window.onload = () => {
 
     resize(textarea);
   });
+
+  // 盤前按鈕也要觸發進度更新
+  document.querySelectorAll('.flow-btn, .array-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(updatePremarketProgress, 50));
+  });
+
+  updatePremarketProgress();
 
   // 更新計時器狀態顯示
   updateTimerStatus();

@@ -303,17 +303,6 @@ body {
 .timer-msg { font-size: 12px; color: var(--text2); margin-top: 4px; }
 .timer-hint { font-size: 12px; color: var(--text3); line-height: 1.5; margin-top: 8px; }
 
-.mg-item {
-  display:flex;align-items:center;gap:6px;
-  padding:6px 8px;border-radius:7px;
-  background:var(--bg3);cursor:pointer;
-  font-size:11px;color:var(--text2);
-  transition:background 0.15s;
-  user-select:none;-webkit-user-select:none;
-}
-.mg-item input { accent-color:var(--blue);width:13px;height:13px;flex-shrink:0;cursor:pointer; }
-.mg-item:has(input:checked) { background:var(--bg2); color:var(--text); font-weight:600; }
-
 .note-input {
   width: 100%;
   background: var(--bg3);
@@ -335,7 +324,6 @@ body {
   min-height: 44px;
   overflow: hidden;
   resize: none;
-  field-sizing: content;
 }
 
 
@@ -431,32 +419,6 @@ body {
   font-weight: 600;
 }
 
-.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.chk-row {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-.chk-row:hover { background: var(--bg3); }
-.chkbox {
-  width: 15px;
-  height: 15px;
-  border-radius: 4px;
-  border: 2px solid var(--border2);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-}
-.chk-row.checked .chkbox { background: var(--green); border-color: var(--green); }
-.chkbox svg { display: none; }
-.chk-row.checked .chkbox svg { display: block; }
-.chk-text { font-size: 13px; color: var(--text); }
-
 .flow-row, .array-row {
   display: flex;
   align-items: center;
@@ -480,37 +442,6 @@ body {
 .flow-btn.none-f { background: var(--bg4); color: var(--text); }
 .array-btn.sel-dis { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
 .array-btn.sel-res { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
-
-.scenario-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-}
-.scenario-card.long-card { border-color: var(--green-border); background: var(--green-bg); }
-.scenario-card.short-card { border-color: var(--red-border); background: var(--red-bg); }
-.scenario-title { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
-.scenario-card.long-card .scenario-title { color: var(--green); }
-.scenario-card.short-card .scenario-title { color: var(--red); }
-
-.psych-row {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-.psych-row.flagged { background: var(--red-bg); border: 1px solid var(--red-border); }
-.psych-row.clear { background: var(--green-bg); border: 1px solid var(--green-border); }
-.psych-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 2px solid var(--border2);
-  flex-shrink: 0;
-}
-.psych-row.flagged .psych-dot { background: var(--red); border-color: var(--red); }
-.psych-row.clear .psych-dot { background: var(--green); border-color: var(--green); }
 
 .save-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .footer { text-align: center; font-size: 12px; color: var(--text3); padding: 12px 0 16px; }
@@ -617,6 +548,7 @@ body {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<base target="_blank">
 </head>
 <body>
 
@@ -939,9 +871,6 @@ body {
     </div>
   </div>
 
-  <!-- plan-note 已整合至 h15-note，保留隱藏欄位供舊資料相容 -->
-  <textarea id="plan-note" style="display:none" class="auto-save"></textarea>
-
 
   <div class="footer">盤前完成 → 前往看板交易</div>
 </div>
@@ -1243,17 +1172,6 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 
-// ==================== 方向設定 ====================
-function setDir(mode, btn) {
-  document.querySelectorAll('#today-bias-group .dir-btn').forEach(b => {
-    b.classList.remove('long', 'short', 'none-act');
-  });
-  if (mode === 'long') btn.classList.add('long');
-  if (mode === 'short') btn.classList.add('short');
-  if (mode === 'none') btn.classList.add('none-act');
-  saveData();
-}
-
 // ==================== 盤前按鈕顏色 ====================
 function setFlow(groupId, val, btn) {
   const group = document.getElementById(groupId);
@@ -1321,6 +1239,7 @@ const EXIT_REASONS = [
   { value: 'other', label: '📌 其他', color: 'var(--text2)' }
 ];
 
+window.EXIT_REASONS = EXIT_REASONS;
 let exitReasons = []; // 儲存每筆交易的理由
 
 function addExitReason(index, val) {
@@ -1641,8 +1560,8 @@ function resetCockpit() {
   if (shutdown) shutdown.style.display = 'none';
   document.querySelectorAll('#cockpit .rule-row').forEach(r => r.classList.remove('done'));
   document.querySelectorAll('#today-bias-group .dir-btn').forEach(b => b.classList.remove('long', 'short', 'none-act'));
-  const dirNote = document.getElementById('dir-note');
-  if (dirNote) dirNote.textContent = '開盤前設定，中途不可改變';
+  // dir-note 已從 HTML 移除
+  // 盤中筆記欄位（已從 HTML 移除，保留相容性）
   ['waiting-note', 'level-note', 'intraday-note'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -1811,7 +1730,7 @@ function saveData() {
   });
 
   // Notes
-  ['w-note','d-note','h4-note','h1-note','h15-note','plan-note','waiting-note','level-note','intraday-note','review-insight','review-tomorrow'].forEach(id => {
+  ['w-note','d-note','h4-note','h1-note','h15-note','review-insight','review-tomorrow'].forEach(id => {
     const el = document.getElementById(id);
     if (el) data.notes[id] = el.value;
   });
@@ -2008,22 +1927,12 @@ function loadAllImgs() {
   });
 }
 
-// ==================== 匯出紀錄 ====================
-function downloadDailyRecord() {
-  const md = buildDailyMarkdown();
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `交易日誌_${new Date().toISOString().slice(0, 10)}.md`;
-  a.click();
-}
-
 // ==================== 盤前清除 ====================
 function clearPremarket() {
   if (!confirm('確定要清除盤前分析所有資料？此操作無法復原。')) return;
 
   // 清除所有 notes
-  ['w-note','d-note','h4-note','h1-note','h15-note','plan-note'].forEach(id => {
+  ['w-note','d-note','h4-note','h1-note','h15-note'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.value = '';
@@ -2284,21 +2193,7 @@ ${document.getElementById('h15-note')?.value || '無'}
 
 ---
 
-## 📍 盤中狀態
-### 等待訊號
-${document.getElementById('waiting-note')?.value || '無'}
-
-### 關鍵價位
-${document.getElementById('level-note')?.value || '無'}
-
-### 盤中觀察
-${document.getElementById('intraday-note')?.value || '無'}
-
----
-
 ## 🧠 心理狀態
-
----
 
 ## ✅ 進場前確認
 ${entryRules}
@@ -2312,73 +2207,6 @@ ${entryRules}
 - Process > Outcome
 - Less is More
 `;
-}
-
-// ==================== JSON 備份 ====================
-function exportBackup() {
-  saveData();
-  try {
-    const raw = localStorage.getItem('trade_full_v32');
-    const data = raw ? JSON.parse(raw) : {};
-
-    // 收集所有圖片資料
-    const images = {};
-    ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
-      const img = localStorage.getItem('chart_img_' + id);
-      if (img) images[id] = img;
-    });
-
-    const backup = {
-      _backup_time: new Date().toLocaleString('zh-TW'),
-      _version: 'v32',
-      data: data,
-      images: images
-    };
-
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `交易看板備份_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-  } catch(e) {
-    alert('備份失敗，請重試');
-  }
-}
-
-function importBackup(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const backup = JSON.parse(e.target.result);
-      if (!confirm(`確定要還原備份？\n備份時間：${backup._backup_time || '未知'}\n版本：${backup._version || '未知'}\n\n目前所有資料將被覆蓋。`)) {
-        input.value = '';
-        return;
-      }
-
-      // 還原主要資料
-      if (backup.data) {
-        localStorage.setItem('trade_full_v32', JSON.stringify(backup.data));
-      }
-
-      // 還原圖片
-      if (backup.images) {
-        for (let id in backup.images) {
-          localStorage.setItem('chart_img_' + id, backup.images[id]);
-        }
-      }
-
-      loadData();
-      loadAllImgs();
-      updateSummary();
-      alert('✅ 還原成功！');
-    } catch(err) {
-      alert('❌ 檔案格式錯誤，請選擇正確的備份檔案');
-    }
-    input.value = '';
-  };
-  reader.readAsText(file);
 }
 
 // ==================== 盤前摘要同步 ====================

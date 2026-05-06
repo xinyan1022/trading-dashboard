@@ -363,6 +363,8 @@ body {
   position: relative;
   display: none;
 }
+/* ===== 統一圖片尺寸 1280×768 ===== */
+.chart-img-standard,
 .img-preview img {
   width: 1280px;
   max-width: 100%;
@@ -371,7 +373,7 @@ body {
   object-fit: contain;
   border-radius: 8px;
   display: block;
-  cursor: pointer;
+  cursor: zoom-in;
   margin: 0 auto;
 }
 .img-preview .img-remove {
@@ -688,7 +690,7 @@ body {
     </div>
     <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">尚未填寫 15M 交易計劃</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
-      <img id="sum-15m-img" src="" style="width:100%;border-radius:8px;display:block;cursor:pointer" onclick="openLightbox(this.src)" title="點擊放大">
+      <img id="sum-15m-img" src="" class="chart-img-standard" onclick="openLightbox(this.src)" title="點擊放大">
     </div>
   </div>
 
@@ -1087,7 +1089,7 @@ function renderReviewPage() {
         <input type="file" id="review-img-input-${i}" accept="image/*" style="display:none" onchange="loadReviewImg(${i},this)">
       </div>
       <div id="review-img-preview-${i}" style="position:relative;display:${rd.imgSrc?'block':'none'}">
-        <img id="review-img-img-${i}" src="${rd.imgSrc||''}" style="width:100%;border-radius:10px;display:block;cursor:zoom-in" onclick="openLightbox(this.src)">
+        <img id="review-img-img-${i}" src="${rd.imgSrc||''}" class="chart-img-standard" onclick="openLightbox(this.src)">
         <button onclick="removeReviewImg(${i})" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:14px">✕</button>
       </div>
     `;
@@ -1140,7 +1142,6 @@ function loadReviewImg(tradeIdx, input) {
     if (img) {
       img.src = e.target.result;
       img.onclick = function() { openLightbox(this.src); };
-      img.style.cursor = 'zoom-in';
     }
     saveData();
   };
@@ -1954,7 +1955,6 @@ function showImg(id, data) {
   if (preview && img && data) {
     img.src = data;
     img.onclick = function() { openLightbox(this.src); };
-    img.style.cursor = 'zoom-in';
     preview.style.display = 'block';
     if (upload) upload.style.display = 'none';
   }

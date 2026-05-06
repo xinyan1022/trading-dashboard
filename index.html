@@ -1224,6 +1224,9 @@ function recordTrade() {
   // 新增出場理由選擇器
   addExitReason(ptsLog.length - 1, val);
 
+  // 出場後自動清除「進場前確認」勾選，準備下一筆交易
+  document.querySelectorAll('#cockpit .rule-row').forEach(r => r.classList.remove('done'));
+
   updateAllUI();
   saveData();
 }

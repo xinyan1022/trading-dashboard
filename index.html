@@ -359,22 +359,35 @@ body {
 }
 .img-upload-area .upload-hint span { font-size: 18px; display: block; margin-bottom: 4px; }
 .img-preview {
-  margin-top: 8px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 8px auto 0;
+  aspect-ratio: 1280 / 768;
+  background: var(--bg3);
+  border-radius: 8px;
+  overflow: visible;
   position: relative;
   display: none;
 }
 /* ===== 統一圖片尺寸 1280×768 ===== */
+.chart-img-wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin: 8px auto 0;
+  aspect-ratio: 1280 / 768;
+  background: var(--bg3);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
 .chart-img-standard,
 .img-preview img {
-  width: 1280px;
-  max-width: 100%;
-  height: auto;
-  aspect-ratio: 1280 / 768;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 8px;
   display: block;
   cursor: zoom-in;
-  margin: 0 auto;
 }
 .img-preview .img-remove {
   position: absolute;
@@ -690,7 +703,9 @@ body {
     </div>
     <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">尚未填寫 15M 交易計劃</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
-      <img id="sum-15m-img" src="" class="chart-img-standard" onclick="openLightbox(this.src)" title="點擊放大">
+      <div class="chart-img-wrap">
+        <img id="sum-15m-img" src="" class="chart-img-standard" onclick="openLightbox(this.src)" title="點擊放大">
+      </div>
     </div>
   </div>
 

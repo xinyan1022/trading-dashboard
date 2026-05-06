@@ -822,7 +822,7 @@ body {
     <div class="card" style="margin-bottom:0">
       <div class="card-title">停損冷卻計時器</div>
       <div class="timer-active" id="timer-active">
-        <div class="timer-val" id="timer-val">30:00</div>
+        <div class="timer-val" id="timer-val">15:00</div>
         <div class="timer-msg">冷卻中——去打遊戲，不要看盤</div>
       </div>
       <button class="btn btn-amber" id="btn-start" onclick="startTimer()">啟動 15 分鐘冷卻</button>
@@ -1670,7 +1670,11 @@ function updateChart() {
   const barLossText = document.getElementById('barLossText');
 
   if (pieWin) pieWin.setAttribute('stroke-dasharray', `${winLen} 390`);
-  if (pieLoss) pieLoss.setAttribute('stroke-dasharray', `${lossLen} 390`);
+  if (pieLoss) {
+    pieLoss.setAttribute('stroke-dasharray', `${lossLen} 390`);
+    // 停損弧段從獲利弧段結束處開始，避免兩段疊在同一起點
+    pieLoss.setAttribute('stroke-dashoffset', -winLen);
+  }
   if (winRateEl) winRateEl.textContent = winRate + '%';
   if (barWin) barWin.style.height = Math.min(wins * 10, 100) + '%';
   if (barLoss) barLoss.style.height = Math.min(losses * 10, 100) + '%';
@@ -1813,7 +1817,7 @@ function saveData() {
   });
 
   try {
-    localStorage.setItem('trade_full_v27', JSON.stringify(data));
+    localStorage.setItem('trade_full_v32', JSON.stringify(data));
   } catch(e) {
     console.error('Save failed:', e);
   }
@@ -1821,9 +1825,18 @@ function saveData() {
 
 function loadData() {
   try {
-    const d = localStorage.getItem('trade_full_v27');
+    const d = localStorage.getItem('trade_full_v32');
     if (!d) {
-      // 嘗試讀取舊版資料
+      // 嘗試讀取舊版資料（v27 → v32 遷移）
+      const migrateFrom = localStorage.getItem('trade_full_v27');
+      if (migrateFrom) {
+        localStorage.setItem('trade_full_v32', migrateFrom);
+        localStorage.removeItem('trade_full_v27');
+        console.log('[遷移] trade_full_v27 → trade_full_v32 完成');
+        // 重新呼叫以走正常路徑
+        loadData();
+        return;
+      }
       const old = localStorage.getItem('trade_full');
       if (old) {
         const oldData = JSON.parse(old);
@@ -2005,140 +2018,6 @@ function downloadDailyRecord() {
   a.click();
 }
 
-function _downloadDailyRecord_UNUSED() {
-  const today = new Date().toLocaleDateString('zh-TW');
-  const total = wins + losses;
-  const rate = total ? Math.round((wins / total) * 100) : 0;
-
-  // 取得方向
-  let bias = '未設定';
-  const biasEl = document.querySelector('#today-bias-group .dir-btn.long, #today-bias-group .dir-btn.short, #today-bias-group .dir-btn.none-act');
-  if (biasEl) {
-    if (biasEl.classList.contains('long')) bias = '偏多';
-    else if (biasEl.classList.contains('short')) bias = '偏空';
-    else bias = '不操作';
-  }
-
-  // 取得 OFL 狀態
-  function getFlow(id) {
-    const el = document.querySelector(`#${id} .flow-btn.bull, #${id} .flow-btn.bear, #${id} .flow-btn.none-f`);
-    if (!el) return '未設定';
-    if (el.classList.contains('bull')) return '🟢 Bullish';
-    if (el.classList.contains('bear')) return '🔴 Bearish';
-    return '⚪ None';
-  }
-
-  function getArray(id) {
-    const el = document.querySelector(`#${id} .array-btn.sel-dis, #${id} .array-btn.sel-res`);
-    if (!el) return '未設定';
-    return el.classList.contains('sel-dis') ? 'Disrespect' : 'Respect';
-  }
-
-
-  // 取得進場前確認
-  const entryRules = Array.from(document.querySelectorAll('#cockpit .rule-row.done .rtext')).map(r => '- [x] ' + r.textContent).join('\n') || '- 無';
-
-  const ptsTotal = ptsLog.reduce((a, b) => a + b, 0);
-  const ptsDetail = ptsLog.length ? ptsLog.map((p, i) => {
-    const reason = exitReasons[i];
-    let reasonText = '';
-    if (reason) {
-      if (typeof reason === 'string') {
-        const r = EXIT_REASONS.find(x => x.value === reason);
-        reasonText = r ? ` — ${r.label}` : '';
-      } else if (reason.reason) {
-        const r = EXIT_REASONS.find(x => x.value === reason.reason);
-        reasonText = r ? ` — ${r.label}` : '';
-        if (reason.note) reasonText += `（${reason.note}）`;
-      }
-    }
-    return `- 第${i+1}筆：${p > 0 ? '+' : ''}${p}點 (${p > 0 ? '+' : ''}${p * 10}元)${reasonText}`;
-  }).join('\n') : '- 無';
-
-  const md = `# 交易日誌 ${today}
-
-## 📊 今日成績
-| 項目 | 數值 |
-|------|------|
-| 今日 Bias | ${bias} |
-| 獲利次數 | ${wins} 次 |
-| 停損次數 | ${losses} 次 |
-| 勝率 | ${rate}% |
-| 累計點數 | ${ptsTotal > 0 ? '+' : ''}${ptsTotal} 點 |
-| 累計金額 | ${ptsTotal * 10 > 0 ? '+' : ''}${ptsTotal * 10} 元 |
-
-### 點數明細
-${ptsDetail}
-
----
-
-## 📋 盤前分析
-
-### Bias 確認
-| 時間框架 | Order Flow Lag | Premium Arrays | Discount Arrays |
-|----------|---------------|----------------|-----------------|
-| Weekly | ${getFlow('wfl')} | ${getArray('w-prem')} | ${getArray('w-disc')} |
-| Daily | ${getFlow('dfl')} | ${getArray('d-prem')} | ${getArray('d-disc')} |
-| 4H | ${getFlow('h4fl')} | ${getArray('h4-prem')} | ${getArray('h4-disc')} |
-| 1H | ${getFlow('h1fl')} | ${getArray('h1-prem')} | ${getArray('h1-disc')} |
-| 15M | ${getFlow('h15fl')} | ${getArray('h15-prem')} | ${getArray('h15-disc')} |
-
-### 各時間框架備註
-
-**Weekly**
-${document.getElementById('w-note')?.value || '無'}
-
-**Daily**
-${document.getElementById('d-note')?.value || '無'}
-
-**4H**
-${document.getElementById('h4-note')?.value || '無'}
-
-**1H**
-${document.getElementById('h1-note')?.value || '無'}
-
-**15M 交易計劃**
-${document.getElementById('h15-note')?.value || '無'}
-
-
----
-
-## 📍 盤中狀態
-### 等待訊號
-${document.getElementById('waiting-note')?.value || '無'}
-
-### 關鍵價位
-${document.getElementById('level-note')?.value || '無'}
-
-### 盤中觀察
-${document.getElementById('intraday-note')?.value || '無'}
-
----
-
-## 🧠 心理狀態
-
----
-
-## ✅ 進場前確認
-${entryRules}
-
----
-
-
-## 📌 核心原則
-- 永遠跟隨最近的 Order Flow Lag
-- Clarity > Profit
-- Process > Outcome
-- Less is More
-`;
-
-  const blob2 = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const a2 = document.createElement('a');
-  a2.href = URL.createObjectURL(blob2);
-  a2.download = `交易日誌_${new Date().toISOString().slice(0, 10)}.md`;
-  a2.click();
-}
-
 // ==================== 盤前清除 ====================
 function clearPremarket() {
   if (!confirm('確定要清除盤前分析所有資料？此操作無法復原。')) return;
@@ -2188,7 +2067,7 @@ async function downloadDailyZip() {
     folder.file(`交易日誌_${today}.md`, mdContent);
 
     // 2. 加入 JSON 資料
-    const raw = localStorage.getItem('trade_full_v27');
+    const raw = localStorage.getItem('trade_full_v32');
     const data = raw ? JSON.parse(raw) : {};
     const images = {};
     ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
@@ -2197,7 +2076,7 @@ async function downloadDailyZip() {
     });
     const backup = {
       _backup_time: new Date().toLocaleString('zh-TW'),
-      _version: 'v27',
+      _version: 'v32',
       data: data,
       images: images
     };
@@ -2272,7 +2151,7 @@ async function restoreFromZip(input) {
 
     // 還原主要資料
     if (backup.data) {
-      localStorage.setItem('trade_full_v27', JSON.stringify(backup.data));
+      localStorage.setItem('trade_full_v32', JSON.stringify(backup.data));
     }
 
     // 還原 JSON 內嵌圖片（舊版備份格式）
@@ -2439,7 +2318,7 @@ ${entryRules}
 function exportBackup() {
   saveData();
   try {
-    const raw = localStorage.getItem('trade_full_v27');
+    const raw = localStorage.getItem('trade_full_v32');
     const data = raw ? JSON.parse(raw) : {};
 
     // 收集所有圖片資料
@@ -2451,7 +2330,7 @@ function exportBackup() {
 
     const backup = {
       _backup_time: new Date().toLocaleString('zh-TW'),
-      _version: 'v27',
+      _version: 'v32',
       data: data,
       images: images
     };
@@ -2480,7 +2359,7 @@ function importBackup(input) {
 
       // 還原主要資料
       if (backup.data) {
-        localStorage.setItem('trade_full_v27', JSON.stringify(backup.data));
+        localStorage.setItem('trade_full_v32', JSON.stringify(backup.data));
       }
 
       // 還原圖片

@@ -1247,6 +1247,28 @@ function addExitReason(index, val) {
   container.scrollTop = container.scrollHeight;
 }
 
+function deleteTrade(index) {
+  const val = ptsLog[index];
+  if (val === undefined) return;
+
+  // 更新計數
+  if (val > 0) wins = Math.max(0, wins - 1);
+  else losses = Math.max(0, losses - 1);
+
+  // 移除該筆
+  ptsLog.splice(index, 1);
+  exitReasons.splice(index, 1);
+
+  // 如果刪除後停損數低於上限，關閉 shutdown
+  if (losses < MAX_LOSS) {
+    const shutdown = document.getElementById('shutdown');
+    if (shutdown) shutdown.style.display = 'none';
+  }
+
+  updateAllUI();
+  saveData();
+}
+
 function renderExitReasons() {
   const container = document.getElementById('exit-reasons');
   if (!container) return;
@@ -1344,9 +1366,28 @@ function renderExitReasons() {
       saveData();
     });
 
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '✕';
+    delBtn.title = '刪除這筆紀錄';
+    delBtn.style.cssText = `
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: none; border-radius: 7px;
+      background: var(--bg2);
+      color: var(--text3);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    `;
+    delBtn.onmouseover = () => { delBtn.style.background = 'var(--red)'; delBtn.style.color = '#fff'; };
+    delBtn.onmouseleave = () => { delBtn.style.background = 'var(--bg2)'; delBtn.style.color = 'var(--text3)'; };
+    delBtn.onclick = () => deleteTrade(index);
+
     wrapper.appendChild(info);
     wrapper.appendChild(select);
     wrapper.appendChild(noteInput);
+    wrapper.appendChild(delBtn);
     container.appendChild(wrapper);
   });
 }

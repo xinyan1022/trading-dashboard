@@ -331,7 +331,7 @@ body {
   aspect-ratio: 1280 / 768;
   background: var(--bg3);
   border-radius: 8px;
-  overflow: visible;
+  overflow: hidden;
   position: relative;
   display: none;
 }
@@ -611,10 +611,10 @@ body {
         style="flex:1;padding:7px 0;border-radius:9px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">觀察</button>
     </div>
     <div id="sum-plan" style="font-size:13px;color:var(--text2);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
-❌ 失敗條件：價格跌破 ___ 實體收盤 → 不進場
+❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
 
 📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
-❌ 失敗條件：價格收復 ___ → 不進場
+❌ 空方失敗條件：價格收復 ___ → 不進場
 
 ⏳ 今日優先執行：多方 / 空方 / 觀望</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
@@ -920,10 +920,10 @@ body {
 <script>
 // ==================== 全域狀態 ====================
 const H15_DEFAULT = `✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
-❌ 失敗條件：價格跌破 ___ 實體收盤 → 不進場
+❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
 
 📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
-❌ 失敗條件：價格收復 ___ → 不進場
+❌ 空方失敗條件：價格收復 ___ → 不進場
 
 ⏳ 今日優先執行：多方 / 空方 / 觀望`;
 let losses = 0;
@@ -1594,25 +1594,6 @@ function loadData() {
     const todayKey = getTodayKey();
     let d = localStorage.getItem(todayKey);
 
-    // 若今日無資料，嘗試一次性遷移舊版資料
-    if (!d) {
-      const oldV32 = localStorage.getItem('trade_full_v32');
-      if (oldV32) {
-        localStorage.setItem(todayKey, oldV32);
-        localStorage.removeItem('trade_full_v32');
-        console.log('[遷移] trade_full_v32 → ' + todayKey);
-        d = oldV32;
-      } else {
-        const oldV27 = localStorage.getItem('trade_full_v27');
-        if (oldV27) {
-          localStorage.setItem(todayKey, oldV27);
-          localStorage.removeItem('trade_full_v27');
-          console.log('[遷移] trade_full_v27 → ' + todayKey);
-          d = oldV27;
-        }
-      }
-    }
-
     if (!d) {
       // 完全無資料：初始化空狀態（換日後自動歸零）
       wins = 0; losses = 0; ptsLog = []; exitReasons = []; reviewData = {};
@@ -1815,6 +1796,16 @@ function clearPremarket() {
     document.querySelectorAll(`#${id} .array-btn`).forEach(b => b.classList.remove('sel-dis','sel-res'));
   });
 
+  // 重設看板 15M 偏多/偏空/觀察按鈕
+  const biasGroup = document.getElementById('sum-15m-bias-group');
+  if (biasGroup) {
+    biasGroup.dataset.selected = '';
+    biasGroup.querySelectorAll('button').forEach(b => {
+      b.style.background = 'var(--bg3)';
+      b.style.color = 'var(--text2)';
+      b.style.borderColor = 'var(--border2)';
+    });
+  }
 
   // 清除圖片
   ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => removeImg(id));
@@ -1922,14 +1913,7 @@ async function restoreFromZip(input) {
       localStorage.setItem(getTodayKey(), JSON.stringify(backup.data));
     }
 
-    // 還原 JSON 內嵌圖片（舊版備份格式）
-    if (backup.images) {
-      for (let id in backup.images) {
-        localStorage.setItem(getImgKey(id), backup.images[id]);
-      }
-    }
-
-    // 還原 ZIP 內的圖片檔案（新版格式）
+    // 還原 ZIP 內的圖片檔案
     const imgMap = { 'Weekly': 'w-img', 'Daily': 'd-img', '4H': 'h4-img', '1H': 'h1-img', '15M': 'h15-img' };
     const imgPromises = [];
     zip.forEach((relativePath, zipEntry) => {
@@ -1953,6 +1937,12 @@ async function restoreFromZip(input) {
 
     loadData();
     loadAllImgs();
+    // 若還原後 h15-note 為空，補入預設文字
+    const h15el = document.getElementById('h15-note');
+    if (h15el && !h15el.value) {
+      h15el.value = H15_DEFAULT;
+      h15el.dispatchEvent(new Event('input'));
+    }
     updateSummary();
     alert(`✅ 從 ZIP 還原成功！\n備份時間：${backup._backup_time || '未知'}`);
   } catch(err) {
@@ -1996,12 +1986,14 @@ function buildDailyMarkdown() {
     const btns = document.querySelectorAll(`#${id} .array-btn.sel-dis, #${id} .array-btn.sel-res`);
     return Array.from(btns).map(b => b.textContent).join(', ') || '—';
   };
+  const m15direction = getFlow('h15fl');
 
   return `# 交易日誌 ${today}
 
 ## 📊 今日成績
 | 項目 | 數值 |
 |------|------|
+| 15M 方向 | ${m15direction} |
 | 獲利次數 | ${wins} 次 |
 | 停損次數 | ${losses} 次 |
 | 勝率 | ${rate}% |
@@ -2041,10 +2033,7 @@ ${document.getElementById('h1-note')?.value || '無'}
 **15M 交易計劃**
 ${document.getElementById('h15-note')?.value || '無'}
 
-
 ---
-
-## 🧠 心理狀態
 
 ## ✅ 進場前確認
 ${entryRules}

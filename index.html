@@ -611,10 +611,10 @@ body {
         style="flex:1;padding:7px 0;border-radius:9px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">觀察</button>
     </div>
     <div id="sum-plan" style="font-size:13px;color:var(--text2);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
-❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
+❌ 失敗條件：價格跌破 ___ 實體收盤 → 不進場
 
 📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
-❌ 空方失敗條件：價格收復 ___ → 不進場
+❌ 失敗條件：價格收復 ___ → 不進場
 
 ⏳ 今日優先執行：多方 / 空方 / 觀望</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
@@ -920,10 +920,10 @@ body {
 <script>
 // ==================== 全域狀態 ====================
 const H15_DEFAULT = `✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
-❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
+❌ 失敗條件：價格跌破 ___ 實體收盤 → 不進場
 
 📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
-❌ 空方失敗條件：價格收復 ___ → 不進場
+❌ 失敗條件：價格收復 ___ → 不進場
 
 ⏳ 今日優先執行：多方 / 空方 / 觀望`;
 let losses = 0;

@@ -255,8 +255,8 @@ body {
 .rule-row.done .rdot { background: var(--green); border-color: var(--green); }
 .rdot svg { display: none; }
 .rule-row.done .rdot svg { display: block; }
-.rtext { font-size: 14px; color: var(--text); line-height: 1.4; }
-.rsub { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.rtext { font-size: 14px; color: var(--text); line-height: 1.5; }
+.rsub { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
 .alert-row {
   display: flex;
@@ -270,6 +270,7 @@ body {
 .adot-red { background: var(--red); }
 .adot-amber { background: var(--amber); }
 .atext { font-size: 14px; color: var(--text); line-height: 1.5; }
+.asub { font-size: 12px; color: var(--text2); line-height: 1.4; margin-top: 2px; }
 
 .loss-track { display: flex; gap: 6px; margin: 10px 0; }
 .ldot {
@@ -652,11 +653,11 @@ body {
 
     <div class="card">
     <div class="card-title">ARJO 核心規則</div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">不臨時改變盤前的Bias分析</div></div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">永遠跟隨最近的 Order Flow Lags</div></div>
-    <div class="alert-row"><div class="adot adot-red"></div><div class="atext">Clarity >Profit (清晰度>利潤)</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">Process>Outcome (過程>結果)</div></div>
-    <div class="alert-row"><div class="adot adot-amber"></div><div class="atext">Less is More (減少螢幕時間)</div></div>
+    <div class="alert-row"><div class="adot adot-red"></div><div><div class="atext">不臨時改變盤前的Bias分析</div><div class="asub">遵守交易計畫</div></div></div>
+    <div class="alert-row"><div class="adot adot-red"></div><div><div class="atext">永遠跟隨最近的 Order Flow Lags</div><div class="asub">HTF OF 會指引交易方向</div></div></div>
+    <div class="alert-row"><div class="adot adot-red"></div><div><div class="atext">Clarity &gt; Profit (清晰度 &gt; 利潤)</div><div class="asub">理解交易方向比利潤更加重要</div></div></div>
+    <div class="alert-row"><div class="adot adot-amber"></div><div><div class="atext">Process &gt; Outcome (過程 &gt; 結果)</div><div class="asub">遵守交易流程，不管結果好壞</div></div></div>
+    <div class="alert-row"><div class="adot adot-amber"></div><div><div class="atext">Less is More (減少螢幕時間)</div><div class="asub">過多的關注只會增加不必要的想法</div></div></div>
   </div>
   </div>
 

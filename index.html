@@ -205,29 +205,6 @@ body {
 .btn-blue { background: linear-gradient(135deg, var(--blue), #2980b9); color: white; }
 .btn-muted { background: var(--bg3); color: var(--text2); }
 
-.dir-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.dir-label { font-size: 14px; color: var(--text2); white-space: nowrap; }
-.dir-btns { display: flex; gap: 6px; }
-.dir-btn {
-  padding: 7px 14px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.dir-btn.long { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.dir-btn.short { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-.dir-btn.none-act { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-.dir-note { font-size: 13px; color: var(--text3); margin-left: auto; }
-
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
 .rule-row {
@@ -318,7 +295,7 @@ body {
   line-height: 1.5;
 }
 .note-input:focus { outline: none; border-color: var(--blue); }
-.note-input::placeholder { color: var(--text3); }
+.note-input::placeholder { color: var(--text2); }
 
 /* 自動增長 textarea */
 .auto-expand {
@@ -633,7 +610,13 @@ body {
       <button onclick="set15mBias('watch',this)" data-val="watch"
         style="flex:1;padding:7px 0;border-radius:9px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">觀察</button>
     </div>
-    <div id="sum-plan" style="font-size:13px;color:var(--text);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">尚未填寫 15M 交易計劃</div>
+    <div id="sum-plan" style="font-size:13px;color:var(--text2);line-height:1.7;padding:10px 12px;background:var(--indigo-bg);border:1.5px solid var(--indigo-border);border-radius:8px;min-height:40px;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
+❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
+
+📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
+❌ 空方失敗條件：價格收復 ___ → 不進場
+
+⏳ 今日優先執行：多方 / 空方 / 觀望</div>
     <div id="sum-15m-img-wrap" style="display:none;margin-top:4px">
       <div class="chart-img-wrap">
         <img id="sum-15m-img" src="" class="chart-img-standard" onclick="openLightbox(this.src)" title="點擊放大">
@@ -862,7 +845,7 @@ body {
     <div class="flow-row"><span class="flow-label">15M Order Flow Lag</span><div class="flow-btns" id="h15fl"><button class="flow-btn" data-val="bull" onclick="setFlow('h15fl','bull',this)">Bullish</button><button class="flow-btn" data-val="bear" onclick="setFlow('h15fl','bear',this)">Bearish</button><button class="flow-btn" data-val="none" onclick="setFlow('h15fl','none',this)">None</button></div></div>
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h15-prem"><button class="array-btn" data-val="dis" onclick="setArray('h15-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
-    <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px;border-color:var(--indigo-border);background:var(--bg2);" placeholder="✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多&#10;❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場&#10;&#10;📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空&#10;❌ 空方失敗條件：價格收復 ___ → 不進場&#10;&#10;⏳ 今日優先執行：多方 / 空方 / 觀望"></textarea>
+    <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px;border-color:var(--indigo-border);background:var(--bg2);color:var(--text);" placeholder=""></textarea>
     <div class="img-upload-area" id="h15-img-upload" onclick="document.getElementById('h15-img-input').click()">
       <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)" onclick="event.stopPropagation()">
       <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
@@ -936,6 +919,13 @@ body {
 
 <script>
 // ==================== 全域狀態 ====================
+const H15_DEFAULT = `✅ 多方劇本：價格回測 ___ 獲得支撐，出現 15M 做多訊號 → 進多
+❌ 多方失敗條件：價格跌破 ___ 實體收盤 → 不進場
+
+📍 空方劇本：跌破 ___ 後反彈無力，出現 15M 做空訊號 → 進空
+❌ 空方失敗條件：價格收復 ___ → 不進場
+
+⏳ 今日優先執行：多方 / 空方 / 觀望`;
 let losses = 0;
 let wins = 0;
 let ptsLog = [];
@@ -1422,13 +1412,6 @@ function resetCockpit() {
   const shutdown = document.getElementById('shutdown');
   if (shutdown) shutdown.style.display = 'none';
   document.querySelectorAll('#cockpit .rule-row').forEach(r => r.classList.remove('done'));
-  document.querySelectorAll('#today-bias-group .dir-btn').forEach(b => b.classList.remove('long', 'short', 'none-act'));
-  // dir-note 已從 HTML 移除
-  // 盤中筆記欄位（已從 HTML 移除，保留相容性）
-  ['waiting-note', 'level-note', 'intraday-note'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
   const exitContainer = document.getElementById('exit-reasons');
   if (exitContainer) exitContainer.innerHTML = '';
   cancelTimer();
@@ -1575,21 +1558,10 @@ function saveData() {
     rules: {
       entry: Array.from(document.querySelectorAll('#cockpit .rule-row.done')).map(r => r.dataset.id),
     },
-    dir: null,
     exitReasons: exitReasons,
     reviewData: reviewData,
     sum15mBias: document.getElementById('sum-15m-bias-group')?.dataset.selected || ''
   };
-
-  // 方向設定
-  const dirBtn = document.querySelector('#today-bias-group .dir-btn.long, #today-bias-group .dir-btn.short, #today-bias-group .dir-btn.none-act');
-  if (dirBtn) {
-    if (dirBtn.classList.contains('long')) data.dir = 'long';
-    else if (dirBtn.classList.contains('short')) data.dir = 'short';
-    else if (dirBtn.classList.contains('none-act')) data.dir = 'none';
-  }
-
-  // Flow buttons
   ['wfl','dfl','h4fl','h1fl','h15fl'].forEach(id => {
     const el = document.querySelector(`#${id} .flow-btn.bull, #${id} .flow-btn.bear, #${id} .flow-btn.none-f`);
     if (el) data.flow[id] = el.dataset.val;
@@ -1604,7 +1576,10 @@ function saveData() {
   // Notes
   ['w-note','d-note','h4-note','h1-note','h15-note','review-insight','review-tomorrow'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) data.notes[id] = el.value;
+    if (el) {
+      // h15-note：若內容等於預設文字，存空字串（視同未填寫）
+      data.notes[id] = (id === 'h15-note' && el.value === H15_DEFAULT) ? '' : el.value;
+    }
   });
 
   try {
@@ -1642,6 +1617,12 @@ function loadData() {
       // 完全無資料：初始化空狀態（換日後自動歸零）
       wins = 0; losses = 0; ptsLog = []; exitReasons = []; reviewData = {};
       document.querySelectorAll('#cockpit .rule-row').forEach(r => r.classList.remove('done'));
+      // h15-note 填入預設文字
+      const h15el = document.getElementById('h15-note');
+      if (h15el && !h15el.value) {
+        h15el.value = H15_DEFAULT;
+        h15el.dispatchEvent(new Event('input'));
+      }
       updateAllUI();
       return;
     }
@@ -1660,17 +1641,6 @@ function loadData() {
       if (timerSec <= 0) {
         timerRunning = false;
         timerSec = 900;
-      }
-    }
-
-    // 載入方向設定
-    if (data.dir) {
-      const btn = document.querySelector(`#today-bias-group [data-val="${data.dir}"]`);
-      if (btn) {
-        document.querySelectorAll('#today-bias-group .dir-btn').forEach(b => b.classList.remove('long','short','none-act'));
-        if (data.dir === 'long') btn.classList.add('long');
-        else if (data.dir === 'short') btn.classList.add('short');
-        else if (data.dir === 'none') btn.classList.add('none-act');
       }
     }
 
@@ -1700,6 +1670,12 @@ function loadData() {
           el.dispatchEvent(new Event('input'));
         }
       }
+    }
+    // h15-note 若無儲存內容，填入預設文字
+    const h15el = document.getElementById('h15-note');
+    if (h15el && !h15el.value) {
+      h15el.value = H15_DEFAULT;
+      h15el.dispatchEvent(new Event('input'));
     }
 
     // 載入規則勾選
@@ -1822,6 +1798,12 @@ function clearPremarket() {
       el.dispatchEvent(new Event('input'));
     }
   });
+  // 重設 h15-note 為預設文字
+  const h15el = document.getElementById('h15-note');
+  if (h15el) {
+    h15el.value = H15_DEFAULT;
+    h15el.dispatchEvent(new Event('input'));
+  }
 
   // 清除所有 flow buttons
   ['wfl','dfl','h4fl','h1fl','h15fl'].forEach(id => {
@@ -1861,16 +1843,10 @@ async function downloadDailyZip() {
     // 2. 加入 JSON 資料
     const raw = localStorage.getItem(getTodayKey());
     const data = raw ? JSON.parse(raw) : {};
-    const images = {};
-    ['w-img','d-img','h4-img','h1-img','h15-img'].forEach(id => {
-      const img = localStorage.getItem('chart_img_' + id);
-      if (img) images[id] = img;
-    });
     const backup = {
       _backup_time: new Date().toLocaleString('zh-TW'),
-      _version: 'v32',
+      _version: 'v37',
       data: data,
-      images: images
     };
     folder.file(`data_${today}.json`, JSON.stringify(backup, null, 2));
 
@@ -1989,17 +1965,10 @@ async function restoreFromZip(input) {
 // 供 downloadDailyZip 使用的 Markdown 建構函式
 function buildDailyMarkdown() {
   const today = new Date().toLocaleDateString('zh-TW');
-  const bias = document.querySelector('#today-bias-group .dir-btn.long, #today-bias-group .dir-btn.short, #today-bias-group .dir-btn.none-act');
-  const biasText = bias ? bias.textContent : '未設定';
-  let wins = 0, losses = 0;
-  const ptsLog = window.ptsLog || [];
-  const exitReasons = window.exitReasons || [];
-  ptsLog.forEach(p => { if (p > 0) wins++; else losses++; });
   const total = wins + losses;
   const rate = total > 0 ? Math.round(wins / total * 100) : 0;
 
   const entryRules = Array.from(document.querySelectorAll('#cockpit .rule-row.done .rtext')).map(r => '- [x] ' + r.textContent).join('\n') || '- 無';
-
 
   const ptsTotal = ptsLog.reduce((a, b) => a + b, 0);
   const ptsDetail = ptsLog.length ? ptsLog.map((p, i) => {
@@ -2033,7 +2002,6 @@ function buildDailyMarkdown() {
 ## 📊 今日成績
 | 項目 | 數值 |
 |------|------|
-| 今日 Bias | ${biasText} |
 | 獲利次數 | ${wins} 次 |
 | 停損次數 | ${losses} 次 |
 | 勝率 | ${rate}% |
@@ -2126,7 +2094,9 @@ function updateSummary() {
   const plan = document.getElementById('h15-note')?.value || '';
   const sumPlan = document.getElementById('sum-plan');
   if (sumPlan) {
-    sumPlan.textContent = plan || '尚未填寫 15M 交易計劃';
+    const isDefault = (!plan || plan === H15_DEFAULT);
+    sumPlan.textContent = plan || H15_DEFAULT;
+    sumPlan.style.color = isDefault ? 'var(--text2)' : 'var(--text)';
   }
 
   // 同步 15M 圖片
@@ -2255,6 +2225,8 @@ window.onload = () => {
     textarea.addEventListener('input', function() {
       resize(this);
       saveData();
+      // h15-note 即時同步到看板摘要
+      if (this.id === 'h15-note') updateSummary();
     });
 
     textarea.addEventListener('blur', function() {

@@ -315,10 +315,12 @@ body {
   cursor: pointer;
   transition: border-color 0.2s;
   position: relative;
+  overflow: hidden;
 }
 .img-upload-area:hover { border-color: var(--blue); }
 .img-upload-area input[type="file"] {
   position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  font-size: 0;
 }
 .img-upload-area .upload-hint {
   font-size: 12px; color: var(--text3); pointer-events: none;
@@ -657,6 +659,47 @@ body {
     </div>
   </div>
 
+  <!-- 停損反省三問 -->
+  <div id="loss-3q-block" style="display:none;margin-bottom:12px">
+    <div style="background:linear-gradient(135deg,rgba(217,48,37,0.10),rgba(217,119,6,0.08));border:2px solid var(--red-border);border-radius:14px;padding:16px 18px;box-shadow:0 4px 18px rgba(217,48,37,0.13);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:4px;height:44px;background:linear-gradient(180deg,var(--red),var(--amber));border-radius:2px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:11px;color:var(--red);font-weight:800;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:2px">⚠️ 浮虧超過 -750 元（停損一半）</div>
+          <div style="font-size:14px;font-weight:700;color:var(--text)">強制問自己三個問題</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;letter-spacing:0.3px">① 我的進場理由還存在嗎？</div>
+          <div style="display:flex;gap:6px">
+            <button onclick="set3Q(0,'yes',this)" class="q3-btn" data-qi="0" data-val="yes" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">✅ 還在</button>
+            <button onclick="set3Q(0,'no',this)" class="q3-btn" data-qi="0" data-val="no" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">❌ 已失效</button>
+          </div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:2px;letter-spacing:0.3px">② 有沒有反向訊號出現？</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">今天你的答案是：有，NQ/ES 要衝高</div>
+          <div style="display:flex;gap:6px">
+            <button onclick="set3Q(1,'yes',this)" class="q3-btn" data-qi="1" data-val="yes" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">⚡ 有反向訊號</button>
+            <button onclick="set3Q(1,'no',this)" class="q3-btn" data-qi="1" data-val="no" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">🔍 無反向訊號</button>
+          </div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;letter-spacing:0.3px">③ 如果現在是新的一筆交易，我還會在這裡做多 / 空嗎？</div>
+          <div style="display:flex;gap:6px">
+            <button onclick="set3Q(2,'yes',this)" class="q3-btn" data-qi="2" data-val="yes" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">👍 還會進</button>
+            <button onclick="set3Q(2,'no',this)" class="q3-btn" data-qi="2" data-val="no" style="flex:1;padding:7px 0;border-radius:8px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s">👎 不會進</button>
+          </div>
+        </div>
+      </div>
+      <div id="loss-3q-conclusion" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;line-height:1.6;text-align:center"></div>
+      <div style="text-align:right;margin-top:10px">
+        <button onclick="dismiss3QBlock()" style="padding:5px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--bg3);color:var(--text3);font-size:12px;cursor:pointer">已確認，關閉</button>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title">出場紀錄</div>
 
@@ -781,8 +824,8 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="w-prem"><button class="array-btn" data-val="dis" onclick="setArray('w-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="w-note" style="min-height:80px" placeholder="Weekly 備註"></textarea>
-    <div class="img-upload-area" id="w-img-upload" onclick="document.getElementById('w-img-input').click()">
-      <input type="file" id="w-img-input" accept="image/*" onchange="loadImg('w-img',this)" onclick="event.stopPropagation()">
+    <div class="img-upload-area" id="w-img-upload">
+      <input type="file" id="w-img-input" accept="image/*" onchange="loadImg(\'w-img\',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 Weekly 圖表截圖</div>
     </div>
     <div class="img-preview" id="w-img-preview">
@@ -797,8 +840,8 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="d-prem"><button class="array-btn" data-val="dis" onclick="setArray('d-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="d-note" style="min-height:80px" placeholder="Daily 備註"></textarea>
-    <div class="img-upload-area" id="d-img-upload" onclick="document.getElementById('d-img-input').click()">
-      <input type="file" id="d-img-input" accept="image/*" onchange="loadImg('d-img',this)" onclick="event.stopPropagation()">
+    <div class="img-upload-area" id="d-img-upload">
+      <input type="file" id="d-img-input" accept="image/*" onchange="loadImg(\'d-img\',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 Daily 圖表截圖</div>
     </div>
     <div class="img-preview" id="d-img-preview">
@@ -813,8 +856,8 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h4-prem"><button class="array-btn" data-val="dis" onclick="setArray('h4-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h4-note" style="min-height:80px" placeholder="4H 備註"></textarea>
-    <div class="img-upload-area" id="h4-img-upload" onclick="document.getElementById('h4-img-input').click()">
-      <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg('h4-img',this)" onclick="event.stopPropagation()">
+    <div class="img-upload-area" id="h4-img-upload">
+      <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg(\'h4-img\',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 4H 圖表截圖</div>
     </div>
     <div class="img-preview" id="h4-img-preview">
@@ -829,8 +872,8 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h1-prem"><button class="array-btn" data-val="dis" onclick="setArray('h1-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h1-note" style="min-height:80px" placeholder="1H 備註"></textarea>
-    <div class="img-upload-area" id="h1-img-upload" onclick="document.getElementById('h1-img-input').click()">
-      <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg('h1-img',this)" onclick="event.stopPropagation()">
+    <div class="img-upload-area" id="h1-img-upload">
+      <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg(\'h1-img\',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 1H 圖表截圖</div>
     </div>
     <div class="img-preview" id="h1-img-preview">
@@ -845,8 +888,8 @@ body {
     <div class="array-row"><span class="array-label">Premium Arrays</span><div class="array-btns" id="h15-prem"><button class="array-btn" data-val="dis" onclick="setArray('h15-prem','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-prem','res',this)">Respect</button></div></div>
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px;border-color:var(--indigo-border);background:var(--bg2);color:var(--text);" placeholder=""></textarea>
-    <div class="img-upload-area" id="h15-img-upload" onclick="document.getElementById('h15-img-input').click()">
-      <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)" onclick="event.stopPropagation()">
+    <div class="img-upload-area" id="h15-img-upload">
+      <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg(\'h15-img\',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
     </div>
     <div class="img-preview" id="h15-img-preview">
@@ -1207,6 +1250,7 @@ function recordTrade() {
     losses++;
     ptsLog.push(val);
     startTimer(); // 停損自動啟動冷卻
+    show3QBlock(); // 停損後顯示三問板塊
   }
 
   // 重繪出場理由列
@@ -2185,6 +2229,69 @@ function onWidthSlider(val) {
 function restoreWidth() {
   const saved = localStorage.getItem('layout_width');
   if (saved) setWidth(parseInt(saved));
+}
+
+
+// ==================== 停損反省三問 ====================
+let q3Answers = [null, null, null]; // 三個問題的答案
+
+function show3QBlock() {
+  const block = document.getElementById('loss-3q-block');
+  if (block) {
+    // 重置答案
+    q3Answers = [null, null, null];
+    document.querySelectorAll('.q3-btn').forEach(b => {
+      b.style.background = 'var(--bg3)';
+      b.style.color = 'var(--text2)';
+      b.style.borderColor = 'var(--border2)';
+    });
+    const concl = document.getElementById('loss-3q-conclusion');
+    if (concl) concl.style.display = 'none';
+    block.style.display = 'block';
+    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function dismiss3QBlock() {
+  const block = document.getElementById('loss-3q-block');
+  if (block) block.style.display = 'none';
+}
+
+function set3Q(qi, val, btn) {
+  q3Answers[qi] = val;
+  // 更新同組按鈕樣式
+  document.querySelectorAll(`.q3-btn[data-qi="${qi}"]`).forEach(b => {
+    if (b.dataset.val === val) {
+      const isGood = (qi === 0 && val === 'yes') || (qi === 1 && val === 'no') || (qi === 2 && val === 'yes');
+      b.style.background = isGood ? 'var(--green-bg)' : 'var(--red-bg)';
+      b.style.color = isGood ? 'var(--green)' : 'var(--red)';
+      b.style.borderColor = isGood ? 'var(--green-border)' : 'var(--red-border)';
+    } else {
+      b.style.background = 'var(--bg3)';
+      b.style.color = 'var(--text2)';
+      b.style.borderColor = 'var(--border2)';
+    }
+  });
+  // 三題都回答後顯示結論
+  if (q3Answers.every(a => a !== null)) {
+    const shouldExit = q3Answers[0] === 'no' || q3Answers[1] === 'yes' || q3Answers[2] === 'no';
+    const concl = document.getElementById('loss-3q-conclusion');
+    if (concl) {
+      if (shouldExit) {
+        concl.style.display = 'block';
+        concl.style.background = 'var(--red-bg)';
+        concl.style.border = '1.5px solid var(--red-border)';
+        concl.style.color = 'var(--red)';
+        concl.textContent = '🚨 結論：出場。理由已不成立或有反向訊號，不要讓停損演變成大虧損。';
+      } else {
+        concl.style.display = 'block';
+        concl.style.background = 'var(--green-bg)';
+        concl.style.border = '1.5px solid var(--green-border)';
+        concl.style.color = 'var(--green)';
+        concl.textContent = '✅ 結論：可以繼續持有，但務必嚴守停損點，不要移動停損。';
+      }
+    }
+  }
 }
 
 // ==================== 初始化 ====================

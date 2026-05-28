@@ -825,7 +825,7 @@ body {
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="w-disc"><button class="array-btn" data-val="dis" onclick="setArray('w-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('w-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="w-note" style="min-height:80px" placeholder="Weekly 備註"></textarea>
     <div class="img-upload-area" id="w-img-upload">
-      <input type="file" id="w-img-input" accept="image/*" onchange="loadImg(\'w-img\',this)">
+      <input type="file" id="w-img-input" accept="image/*" onchange="loadImg('w-img',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 Weekly 圖表截圖</div>
     </div>
     <div class="img-preview" id="w-img-preview">
@@ -841,7 +841,7 @@ body {
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="d-disc"><button class="array-btn" data-val="dis" onclick="setArray('d-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('d-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="d-note" style="min-height:80px" placeholder="Daily 備註"></textarea>
     <div class="img-upload-area" id="d-img-upload">
-      <input type="file" id="d-img-input" accept="image/*" onchange="loadImg(\'d-img\',this)">
+      <input type="file" id="d-img-input" accept="image/*" onchange="loadImg('d-img',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 Daily 圖表截圖</div>
     </div>
     <div class="img-preview" id="d-img-preview">
@@ -857,7 +857,7 @@ body {
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h4-disc"><button class="array-btn" data-val="dis" onclick="setArray('h4-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h4-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h4-note" style="min-height:80px" placeholder="4H 備註"></textarea>
     <div class="img-upload-area" id="h4-img-upload">
-      <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg(\'h4-img\',this)">
+      <input type="file" id="h4-img-input" accept="image/*" onchange="loadImg('h4-img',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 4H 圖表截圖</div>
     </div>
     <div class="img-preview" id="h4-img-preview">
@@ -873,7 +873,7 @@ body {
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h1-disc"><button class="array-btn" data-val="dis" onclick="setArray('h1-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h1-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h1-note" style="min-height:80px" placeholder="1H 備註"></textarea>
     <div class="img-upload-area" id="h1-img-upload">
-      <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg(\'h1-img\',this)">
+      <input type="file" id="h1-img-input" accept="image/*" onchange="loadImg('h1-img',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 1H 圖表截圖</div>
     </div>
     <div class="img-preview" id="h1-img-preview">
@@ -889,7 +889,7 @@ body {
     <div class="array-row"><span class="array-label">Discount Arrays</span><div class="array-btns" id="h15-disc"><button class="array-btn" data-val="dis" onclick="setArray('h15-disc','dis',this)">Disrespect</button><button class="array-btn" data-val="res" onclick="setArray('h15-disc','res',this)">Respect</button></div></div>
     <textarea class="note-input auto-save auto-expand" id="h15-note" style="min-height:160px;border-color:var(--indigo-border);background:var(--bg2);color:var(--text);" placeholder=""></textarea>
     <div class="img-upload-area" id="h15-img-upload">
-      <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg(\'h15-img\',this)">
+      <input type="file" id="h15-img-input" accept="image/*" onchange="loadImg('h15-img',this)">
       <div class="upload-hint"><span>📷</span>點擊上傳 15M 圖表截圖</div>
     </div>
     <div class="img-preview" id="h15-img-preview">
@@ -1770,10 +1770,18 @@ function loadImg(id, input) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const data = e.target.result;
-    localStorage.setItem(getImgKey(id), data);
+    // 先顯示圖片（不等 localStorage，避免寫入失敗時畫面無反應）
     showImg(id, data);
-    // 若更新 15M 圖片，同步看板摘要
     if (id === 'h15-img') updateSummary();
+    // 再嘗試儲存，圖片過大時 localStorage 會拋例外，catch 後靜默處理
+    try {
+      localStorage.setItem(getImgKey(id), data);
+    } catch(e) {
+      console.warn('圖片太大，無法存入 localStorage，本次開啟有效：', id, e);
+    }
+  };
+  reader.onerror = function() {
+    console.error('圖片讀取失敗：', id);
   };
   reader.readAsDataURL(file);
 }
